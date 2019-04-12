@@ -1,6 +1,5 @@
 package cqjtu.ds.yun;
 
-import cqjtu.ds.yun.commons.CustomMultipartResolver;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
@@ -28,13 +27,4 @@ public class YunApplication {
 		config.setMaxRequestSize("9000MB");
 		return config.createMultipartConfig();
 	}
-
-	/**
-	 * 配置multipartResolver
-	 * @return
-	 */
-	/*@Bean(name = "multipartResolver")
-	public MultipartResolver multipartResolver(){
-		return new CustomMultipartResolver();
-	}*/
 }

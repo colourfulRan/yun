@@ -1,13 +1,15 @@
 package cqjtu.ds.yun.utils;
 
 
+import org.springframework.stereotype.Component;
+
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-
+@Component
 public class AESUtils {
 
     /**
