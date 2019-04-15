@@ -1,10 +1,7 @@
 package cqjtu.ds.yun.web;
 
 import cqjtu.ds.yun.service.LoadFileService;
-import cqjtu.ds.yun.service.domain.Progress;
-import cqjtu.ds.yun.service.impl.LoadFileServiceImpl;
 import cqjtu.ds.yun.utils.AliyunOSSUtil;
-import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.LoggerFactory;
@@ -12,14 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.DecimalFormat;
 
 @Controller
 public class UpLoadController {
@@ -32,6 +27,7 @@ public class UpLoadController {
     @Autowired
     private LoadFileService loadFileService;
 
+
     @RequestMapping("/test")
     public String test(){
         return "test";
@@ -43,14 +39,21 @@ public class UpLoadController {
     }
 
     /**文件上传**/
-    @RequestMapping("/uploadFile")
-    @ResponseBody
+    @RequestMapping("uploadFile")
     public String uploadBlog(@RequestParam("file")MultipartFile file,HttpServletRequest request){//MultipartFile是spring类型，代表HTML中form data方式上传的文件，包含二进制数据+文件名称。       logger.info("文件上传");
-        String filename=file.getOriginalFilename();
-        String fileType=file.getContentType();
-
-        System.out.println(filename+"  "+fileType);
         HttpSession session=request.getSession();
+        String filename=file.getOriginalFilename();
+        session.setAttribute("fileName",filename);
+        System.out.println(filename);
+        long fileLength=file.getSize();
+        DecimalFormat df=new DecimalFormat(".00");
+        if(fileLength<1024){
+            session.setAttribute("fileSize","1KB");
+        }else if(fileLength>=1024 && fileLength<1024*1024){
+            session.setAttribute("fileSize",df.format(fileLength/1024.0)+"KB");
+        }else {
+            session.setAttribute("fileSize",df.format(fileLength/(1024.0*1024.0))+"MB");
+        }
         try {
             if(file!=null){
                 if (!"".equals(filename.trim())){
@@ -62,8 +65,8 @@ public class UpLoadController {
                     file.transferTo(newFile);//将上传文件写入目标文件
                     //上传到OSS
                     String key="time1128";
-                 //   String url=aliyunOSSUtil.upLoad(newFile,session,key);
-                    loadFileService.uploadFile(newFile,fileType,session);
+                    String url=aliyunOSSUtil.upLoad(newFile,session,key);
+                 //   loadFileService.uploadFile(newFile,fileType,session);
                     //删除临时文件
                     newFile.delete();
                 }
@@ -72,51 +75,46 @@ public class UpLoadController {
             e.printStackTrace();
             //return "上传失败："+e.getMessage();
         }
-        int percent=session.getAttribute("uploadPercent")==null?0: (int) session.getAttribute("uploadPercent");
-        long uploadSize= session.getAttribute("uploadSize")==null?0: (long) session.getAttribute("uploadSize");
-        String fileSize=session.getAttribute("fileSize")==null?null: (String) session.getAttribute("fileSize");
-        System.out.println(percent+" "+uploadSize+" "+fileSize);
-        return "upload_success";
+        return "upload_success";//上传成功页面
     }
 
     /**获取实时上传进度**/
-    @RequestMapping("/percent")
+    @RequestMapping(value = "percent",produces = "application/json;charset=UTF-8")
     @ResponseBody
     public String getUploadPercent(HttpServletRequest request){
         HttpSession session=request.getSession();
         int percent=session.getAttribute("uploadPercent")==null?0: (int) session.getAttribute("uploadPercent");
-        long uploadSize= session.getAttribute("uploadSize")==null?0: (long) session.getAttribute("uploadSize");
+        String uploadSize= session.getAttribute("uploadSize")==null?null: (String) session.getAttribute("uploadSize");
         String fileSize=session.getAttribute("fileSize")==null?null: (String) session.getAttribute("fileSize");
-        System.out.println(session.getAttribute("uploadPercent"));
-        JSONObject result = new JSONObject();
+        System.out.println("上传进度"+percent+"已上传大小"+uploadSize);
+
+        JSONObject data=new JSONObject();
         try {
-            result.put("percent",percent);
-            result.put("uploadSize",uploadSize);
-            result.put("fileSize",fileSize);
+            data.put("fileName",session.getAttribute("fileName"));
+            data.put("uploadPercent",percent);
+            data.put("fileSize",fileSize);
+            data.put("uploadSize",uploadSize);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return result.toString();
+        return data.toString();
     }
+
 
     /**重置上传进度**/
-    @RequestMapping("/resetPercent")
-    public void resetPercent(HttpServletRequest request){
+    @RequestMapping("resetPercent")
+    @ResponseBody
+    public String resetPercent(HttpServletRequest request){
         HttpSession session=request.getSession();
         session.setAttribute("upload_percent",0);
+        return "重置进度";
     }
 
-    /**取消上传**/
-    @RequestMapping("/cancelUpload")
-    public void cancelUpload(String uploadId){
-       // HttpSession session=request.getSession();
-        //String uploadId= (String) session.getAttribute("uploadId");
-        System.out.println(uploadId);
-        aliyunOSSUtil.cancelUpload(uploadId,"time1409");
-    }
 
     @RequestMapping("upload")
-    public String upLoad(){
+    public String upLoad(HttpSession session){
+        session.getAttribute("uploadPercent");
+        System.out.println(session.getId());
         return "upLoad";
     }
 }

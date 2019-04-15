@@ -1,15 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
 <head>
     <meta charset="UTF-8">
     <title>【基于OSS的上传文件页面】</title>
     <script type="text/javascript" src="../static/jquery-1.11.3.min.js"></script>
     <script type="text/javascript" src="../static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../static/js/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css"  media="all">
-
-
-
     <style type="text/css">
         *{
             margin:0;
@@ -31,7 +28,7 @@
     <h2 style="color:orangered;">基于OSS的上传文件页面</h2>
 </div>
 <br/>
-<form id="fileForm" action="/uploadFile"  enctype="multipart/form-data" method="post">
+<form id="fileForm" action="uploadFile"  enctype="multipart/form-data" method="post">
     <div class="form-group" id="group">
         <label for="exampleInputFile" id="msg">File input</label>
         <input type="file" id="exampleInputFile" name="file">
@@ -39,60 +36,26 @@
     <button type="submit"  onclick="interval()" class="btn btn-default" id="submit" data-toggle="modal"  data-target="#myModal">上传</button>
 </form>
 
-<!--上传进度条-->
-<!--<div class="page-header" style="display: none">
-    <h4 class="modal-title" id="">文件名称</h4>
-    <div class="row">
-        <div class="col-md-8"><div class="modal-body">
-            <div class="progress">
-                <div id="percent" class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
-                    &lt;!&ndash;<span class="sr-only" id="per">0%</span>&ndash;&gt;
-                    <percentage>0%</percentage>
-                </div>
-            </div>
-        </div></div>
-        <div class="col-md-4">
-            <div class="center-block" style="margin-top: 15px">
-                <div class="row">
-                    <div class="col-md-6">650MB</div>
-                    <div class="col-md-6">
-                        <div class="row">
-                            <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-                            <span class="glyphicon glyphicon-remove" style="margin-left: 15px" aria-hidden="true"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>-->
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="false">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">文件名称</h4>
+                <h4 class="modal-title" id="fileName"></h4>
             </div>
             <div class="row">
                 <div class="col-md-8"><div class="modal-body">
                     <div class="progress">
-                        <div id="progress" class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+                        <div id="progress" class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100">
                             <span class="sr-only" id="per">0%</span>
                         </div>
                     </div>
                 </div></div>
                 <div class="col-md-4">
                     <div class="center-block" style="margin-top: 15px">
-                        <div class="row">
-                            <div class="col-md-6">650MB</div>
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-                                    <span class="glyphicon glyphicon-remove" style="margin-left: 15px" aria-hidden="true"><a href="/cancelUpload"></a></span>
-                                </div>
-                            </div>
-                        </div>
+                        <span id="uploadSize"></span>/
+                        <span id="fileSize"></span>
                     </div>
                 </div>
             </div>
@@ -100,70 +63,11 @@
     </div>
 </div>
 </body>
-<!--<script th:inline="javascript">
-    //上传文件
-    function upload() {
-        $("#msg").text("");
-        var checkFile=$("#uploadFile").val();
-        var msgInfo="";
-        if(null==checkFile || ""==checkFile){
-            $("#msg").text("文件为空，请选择文件！");
-        }else{
-            var formData=new FormData(document.getElementById("FileUploadForm"));
-            $.ajax({
-                type:"POST",
-                enctype:'multipart/form-data',
-                url:'/uploadFile',
-                data:formData,
-                cache:false,
-                processData:false,
-                contentType:false,
-                error:function (result) {
-                    console.log("error");
-                    console.log(result);
-                    flag=false;
-                    $("#msg").text("访问服务器错误，请重试！");
-                },
-                success:function (result) {
-                    console.log("success");
-                },
-                xhr:function () {
-                    var xhr=$.ajaxSettings.xhr;
-                    if(xhr.upload){
-                        //处理进度条事件
-                        xhr.upload.addEventListener("progress",progressHandle,false);
-                        //加载完成事件
-                     //   xhr.addEventListener("load",completeHandle,false);
-                        //加载出错事件
-                    //    xhr.addEventListener("error",failedHandle,false);
-                        //加载取消事件
-                    //    xhr.addEventListener("abort",canceledHandle,false);
-                        //开始显示进度条
-                        showProgress();
-                        return xhr;
-                    }
-                }
-            },'json');
-        }
-    }
-    var start=0;
-    //显示进度条函数
-    function showProgress() {
-        start=new Date().getTime();
-        $(".progress").css("display","block");
-    }
-    //隐藏进度条
-   /* function hideProgress() {
-        $("#uploadFile").val('');
-        $('.progress percentage').html("0%");
-    }*/
-    //进度条更新
-    function progressHandle(e) {
-        $("#percent").width([[${session.percent}]]);
-    }
-</script>-->
 <script type="text/javascript">
-    //每100ms获取一次图片上传进度
+    $(function(){
+        $(".modal-dialog").draggable();
+    })
+    //每500ms获取一次图片上传进度
     var intervalId;
     function interval() {
         //轮询时间
@@ -173,19 +77,19 @@
     function showPercent() {
         $.ajax({
             type:"POST",
-            contentType:false,
-            async:false,
-            cache:false,
-            url:"/percent",
+            url:"percent",
             dataType:"json",
-            success:function (data) {
-                console.log(data);
-                var per=0;
-                per=data[0]+"%"
+            success:function (msg) {
+                var per="0%";
+                var per=msg.uploadPercent+"%";
                 console.log(per);
+                $("#fileName").text(msg.fileName);
                 $("#progress").css("width",per);//图片上传进度
+                $("#uploadSize").text(msg.uploadSize);
+                $("#fileSize").text(msg.fileSize);
                 $("#per").html(per);
                 if(per=='100%'){
+                    $('#myModal').modal('hide')
                     stopInterval();
                     clearPercent();
                 }
@@ -204,10 +108,10 @@
             contentType:false,
             async:false,
             cache:false,
-            url:"/resetPercent",
+            url:"resetPercent",
             dataType:"json",
             success:function (data) {
-                console.log("ddd"+data);
+                console.log(data);
             }
         });
     }
