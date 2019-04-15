@@ -54,15 +54,8 @@ public class AliyunOSSUtil {
         try{
             /**2.上传分片**/
             //计算文件有多少个分片
-            long partSize=5*1024*1024L;
+            long partSize=1*768*1024L;
             long fileLength=file.length();
-            if(fileLength<1024){
-                session.setAttribute("fileSize",fileLength);
-            }else if(fileLength>=1024 && fileLength<1024*1024){
-               session.setAttribute("fileSize",fileLength/1024+"KB");
-            }else {
-                session.setAttribute("fileSize",fileLength/(1024*1024)+"MB");
-            }
             int partCount= (int) (fileLength/partSize);
             if(fileLength % partSize!=0){
                 partCount++;
@@ -172,9 +165,7 @@ public class AliyunOSSUtil {
                 uploadedPart++;
                 percent=uploadedPart*100/partCount;
                 session.setAttribute("uploadPercent",percent);
-                session.setAttribute("uploadSize",uploadedPart*partSize);
-                System.out.println(uploadedPart+" "+percent);
-                System.out.println("per:"+session.getAttribute("uploadPercent"));
+                session.setAttribute("uploadSize",uploadedPart*0.75+"MB");
                 //每次上传分片之后，OSS的返回结果会包含一个PartETag。PartETag将被保存到PartETags中。
                 synchronized (this.partETags) {
                     this.partETags.add(uploadPartResult.getPartETag());

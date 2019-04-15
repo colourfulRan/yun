@@ -110,7 +110,7 @@ public class PaillierUtils {
         return c.modPow(lambda, n_square).subtract(BigInteger.ONE).divide(n).multiply(u).mod(n);
     }
 
-    public static void main(String []args){
+   /* public static void main(String []args){
 
 
         PaillierUtils paillierUtils=new PaillierUtils();
@@ -140,5 +140,5 @@ public class PaillierUtils {
         BigInteger esub=em1.multiply(em2).mod(paillierUtils.n_square);
         System.out.println("密文异或："+esub);
         System.out.println("密文异或解密："+paillierUtils.Decryption(esub));
-    }
+    }*/
 }
