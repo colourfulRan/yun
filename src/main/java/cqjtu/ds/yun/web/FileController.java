@@ -1,9 +1,6 @@
 package cqjtu.ds.yun.web;
-
-import cqjtu.ds.yun.result.ExecuteResult;
 import cqjtu.ds.yun.service.FileService;
-import cqjtu.ds.yun.service.domain.File;
-import cqjtu.ds.yun.service.domain.User;
+import cqjtu.ds.yun.service.domain.DomainFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,11 +118,11 @@ public class FileController
     {
         logger.info("图片列表！！！");
         Integer userid= (Integer) session.getAttribute("uid");//通过session获取userid
-        Integer count=fileService.ImageCount(userid,2,0);//获取数据条数
+        Integer count=fileService.ImageCount(userid,2,false);//获取数据条数
        // int pageNum=count % limit == 0 ? count / limit : count/limit+1;//页数
         //pageNum总是从0开始，表示查询页，limit指每页的期望行数
         Pageable pageRequest = PageRequest.of(page-1,limit);
-        Page<File> pageResult = fileService.findAllFiles(userid,2,0,pageRequest);
+        Page<DomainFile> pageResult = fileService.findAllFiles(userid,2,false,pageRequest);
         Map<String, Object> map = null;
         map = new LinkedHashMap<String, Object>();
         map.put("code",0);
@@ -145,9 +142,9 @@ public class FileController
         Integer userid= (Integer) session.getAttribute("uid");//通过session获取userid
         String filena="%" + filename + "%";
         Map<String, Object> map = null;
-        Integer count = fileService.Imagename_Count(userid,2,0,filena);//获取数据条数
+        Integer count = fileService.Imagename_Count(userid,2,false,filena);//获取数据条数
         Pageable pageRequest = PageRequest.of(page - 1, limit);
-        Page<File> filename_page = fileService.findAllbyimagename(userid,2,0,filena,pageRequest);
+        Page<DomainFile> filename_page = fileService.findAllbyimagename(userid,2,false,filena,pageRequest);
         map = new LinkedHashMap<String, Object>();
         map.put("code", 0);
         map.put("msg", "");

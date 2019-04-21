@@ -5,7 +5,7 @@ import cqjtu.ds.yun.dal.FileRepo;
 import cqjtu.ds.yun.result.ExecuteResult;
 import cqjtu.ds.yun.service.FileService;
 
-import cqjtu.ds.yun.service.domain.File;
+import cqjtu.ds.yun.service.domain.DomainFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,30 +33,30 @@ public class FileServiceImpl implements FileService
     @Override
     public void RemoveFile(String fileid)
     {
-        fileRepo.deleteByFileid(fileid);
+        fileRepo.deleteByFileId(fileid);
     }
 
     @Transactional
     @Override
-    public File UpdateFile(File file) {
+    public DomainFile  UpdateFile( DomainFile  file) {
         return fileRepo.save(file);
     }
 
     @Transactional
     @Override
-    public File SaveFile(File file) {
+    public  DomainFile  SaveFile( DomainFile  file) {
         return fileRepo.save(file);
     }
 
 
     @Override
-    public Integer ImageCount(Integer userid,Integer typeid,Integer isdel) {
-        return fileRepo.countAllByUseridAndTypeidAndIsdel(userid, typeid, isdel);
+    public Integer ImageCount(Integer userid,Integer typeid,Boolean isdel) {
+        return fileRepo.countAllByUserIdAndTypeIdAndIsDel(userid, typeid, isdel);
     }
 
     @Override
-    public Integer Imagename_Count(Integer userid,Integer typeid,Integer isdel,String filename) {
-        return fileRepo.countAllByUseridAndTypeidAndIsdelAndFilenameLike(userid, typeid, isdel, filename);
+    public Integer Imagename_Count(Integer userid,Integer typeid,Boolean isdel,String filename) {
+        return fileRepo.countAllByUserIdAndTypeIdAndIsDelAndFileNameLike(userid, typeid, isdel, filename);
     }
 
     /* @Override
@@ -102,15 +102,15 @@ public class FileServiceImpl implements FileService
 */
 
    @Override
-    public Page<File> findAllFiles(Integer userid, Integer typeid,Integer isdel, Pageable pageable)
+    public Page<DomainFile> findAllFiles(Integer userid, Integer typeid, Boolean isdel, Pageable pageable)
    {
 
-        return fileRepo.findAllByUseridAndTypeidAndIsdel(userid, typeid, isdel, pageable);
+        return fileRepo.findAllByUserIdAndTypeIdAndIsDel(userid, typeid, isdel, pageable);
     }
 
     @Override
-    public Page<File> findAllbyimagename(Integer userid, Integer typeid,Integer isdel,String filename,Pageable pageable)
+    public Page<DomainFile> findAllbyimagename(Integer userid, Integer typeid,Boolean isdel,String filename,Pageable pageable)
     {
-        return fileRepo.findAllByUseridAndTypeidAndIsdelAndFilenameLike(userid, typeid, isdel, filename, pageable);
+        return fileRepo.findAllByUserIdAndTypeIdAndIsDelAndFileNameLike(userid, typeid, isdel, filename, pageable);
     }
 }
