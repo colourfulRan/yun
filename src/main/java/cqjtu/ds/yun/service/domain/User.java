@@ -1,10 +1,14 @@
 package cqjtu.ds.yun.service.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
-
-@Entity//标注user是个实体
-//@Table(name="user")
+@Entity
+@Table(name="user")
+@Getter
+@Setter
 public class User {
 
     @Id//主键
