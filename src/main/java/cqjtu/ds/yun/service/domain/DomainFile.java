@@ -2,6 +2,7 @@ package cqjtu.ds.yun.service.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -11,6 +12,7 @@ import java.util.Date;
 @Table(name="file")
 @Getter
 @Setter
+@ToString
 public class DomainFile {
 
     @Id
@@ -34,4 +36,6 @@ public class DomainFile {
     private  boolean isDel;
 
     private Date delDate;
+
+
 }

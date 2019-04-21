@@ -15,21 +15,16 @@ import java.util.List;
 public interface FileRepo extends JpaRepository<DomainFile,Integer>
 {
     List<DomainFile> findAll();
-    List<DomainFile> findAllByUseridAndTypeid(Integer userid,Integer typeid);
+    List<DomainFile> findAllByUserIdAndTypeId(Integer userId,Integer typeId);
 
-    Page<DomainFile> findAllByUseridAndTypeidAndIsdel(Integer userid,Integer typeid,Integer isdel,Pageable pageable);
-
-
-    Page<DomainFile>findAllByUseridAndTypeidAndIsdelAndFilenameLike(Integer userid, Integer typeid,Integer isdel,String filename,Pageable pageable);
+    Page<DomainFile> findAllByUserIdAndTypeIdAndIsDel(Integer userId,Integer typeId,Boolean isDel,Pageable pageable);
+    Page<DomainFile>findAllByUserIdAndTypeIdAndIsDelAndFileNameLike(Integer userId, Integer typeId,Boolean isDel,String fileName,Pageable pageable);
     //FilenameLike();
 
-    void deleteByFileid(String fileid);
+    void deleteByFileId(String fileId);
 
-    Integer countAllByUseridAndTypeidAndIsdel(Integer userid, Integer typeid,Integer isdel);
+    Integer countAllByUserIdAndTypeIdAndIsDel(Integer userId, Integer typeId,Boolean isDel);
 
-    Integer countAllByUseridAndTypeidAndIsdelAndFilenameLike(Integer userid, Integer typeid,Integer isdel,String filename);
-   // FilenameLike
+    Integer countAllByUserIdAndTypeIdAndIsDelAndFileNameLike(Integer userId, Integer typeId,Boolean isDel,String fileName);
 
-    //List<File>findAllByFilename(String filename) ;
-    //List<File>findAllByUser_idAndType_id(int user_id,int type_id);
 }

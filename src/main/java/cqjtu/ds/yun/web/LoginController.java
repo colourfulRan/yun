@@ -34,7 +34,7 @@ public class LoginController
         //User u1=
         if(loginResult.isExecuted()&&loginResult.isSuccess())
         {
-            model.addAttribute("uid",loginResult.getData().getUserid());
+            model.addAttribute("uid",loginResult.getData().getUserId());
             model.addAttribute("uname",loginResult.getData().getUsername());
             model.addAttribute("uphoto",loginResult.getData().getPhoto());
             return "main" ;
@@ -46,12 +46,5 @@ public class LoginController
 
         }
     }
-/*
-    @RequestMapping("/test")
-    public String test(HttpSession session)
-    {
-        logger.info("user1:{}",session.getAttribute("ul"));
-        return "test";
-    }
-*/
+
 }

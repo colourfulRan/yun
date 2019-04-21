@@ -16,21 +16,18 @@ public class User {
 
     //可加入bean验证
 
-    @Column(name="user_id")
-    private Integer userid;
+    private Integer userId;
     private String username;
     private String password;
     private String photo;
 
-    //无参构造函数
-    public User()
-    { }
+    public Integer getUserId() {
+        return userId;
+    }
 
-    public Integer getUserid()
-    { return userid; }
-
-    public void setUserid(Integer userid)
-    { this.userid = userid; }
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
     public String getUsername() {
         return username;
@@ -54,15 +51,5 @@ public class User {
 
     public void setPhoto(String photo) {
         this.photo = photo;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "userid=" + userid +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", photo='" + photo + '\'' +
-                '}';
     }
 }
