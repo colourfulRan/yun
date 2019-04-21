@@ -1,5 +1,7 @@
 package cqjtu.ds.yun.result;
 
+//统一处理返回对象；封装返回的对象
+
 public class ExecuteResult<T> {
 
     //执行是否成功
@@ -8,8 +10,10 @@ public class ExecuteResult<T> {
     private boolean isSuccess;
     //结果码
     private String code;
-    //消息
+
+    //处理后的消息提示
     private String message;
+
     //结果数据
     private T data;
 

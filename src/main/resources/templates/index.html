@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>登录</title>
@@ -7,7 +7,11 @@
     <link rel="stylesheet" href="css/register.css"/>
 </head>
 <body>
+
+
+
 <div class="box">
+
     <div class="nav cl">
         <div class="nav_z z">
             <img src="images/register01.png"/>
@@ -18,46 +22,58 @@
             <a href="">联系我们</a>
         </div>
     </div>
+
     <div class="main cl">
+
         <div class="main_z z">
             <img src="images/register02.png"/>
         </div>
-        <div class="main_y y">
+
+
+
+        <div class="main_y y" >
+<form th:action="@{/login}" method="post">
             <div class="main_y_title">
                 欢迎使用
             </div>
-            <div class="meta"></div>
+          <!--  <div class="meta"></div>-->
             <div class="main_y_content">
 
                 <div class="main_input">
                     <input type="text" placeholder="请输入用户名" class="phone" name="username" maxlength="11"/>
                     <img src="images/register03.png"/>
                 </div>
+
                 <div class="main_input">
                     <input type="password" placeholder="请输入密码" class="password" name="password" maxlength="18"/>
                     <img src="images/register03.png"/>
                 </div>
+
                 <div class="remember_password">
                     <input type="checkbox" checked="checked" name="checked" class="examine"/>
                     <span>记住密码</span>
                 </div>
-                <a href="">
-                    <div class="register">
-                        登&nbsp;录
-                    </div>
-                </a>
+
+                <button class="register" type="submit">登录</button>
+
                 <div class="main_y_content_buttom">
-                    <a href="">忘记密码?</a>
+                    <a href="register">忘记密码?</a>
                 </div>
             </div>
+</form>
         </div>
+
     </div>
+
     <div class="footer">
         2016 youlianyun inc. All Rights Reserved
     </div>
+
+
 </div>
 <script type="text/javascript" src="js/jquery-2.2.3.min.js"></script>
 <script type="text/javascript" src="js/register.js"></script>
+<!--
 <script>
 
     $(".phone").blur(function () {
@@ -76,6 +92,6 @@
 
 
 </script>
-
+-->
 </body>
 </html>
