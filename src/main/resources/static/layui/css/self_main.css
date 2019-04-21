@@ -1,0 +1,125 @@
+.layui-layout-admin .layui-logo {
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 200px;
+    height:60px;
+    line-height: 60px;
+    text-align: center;
+    color: #009688;
+    font-size: 35px;
+}
+
+.layui-layout-admin .layui-body {
+    top: 80px;
+    bottom: 0px;
+}
+
+.layui-body
+{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 80px;
+    bottom: 0;
+    z-index: 998;
+    width: auto;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    box-sizing: border-box;
+}
+
+
+
+.layui-header{
+    z-index: 1000;
+    height: 80px;
+}
+
+/*
+.layui-layout-left
+{
+    position: absolute !important;
+    left:0px;
+    top: 0;
+}*/
+
+
+.layui-layout-admin .layui-header{
+    background-color: #C9C9C9;
+}
+
+
+.layui-nav{
+    position: relative;
+    padding: 0 20px;
+    border-radius: 2px;
+    background-color:#C9C9C9;
+    font-size: 0;
+    box-sizing: border-box;
+}
+
+
+.layui-nav .layui-nav-item {
+    position: relative;
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    vertical-align: middle;
+    line-height: 80px;
+}
+.layui-nav * {
+    font-size: 18px;
+    color: black;
+}
+
+.layui-nav .layui-nav-item a {
+    display: block;
+    padding: 0 20px;
+    color: #fff;
+    color: rgba(12, 11, 11, 0.7);
+    transition: all .3s;
+    -webkit-transition: all .3s;
+}
+
+.layui-nav .layui-nav-more {
+    content: '';
+    width: 0;
+    height: 0;
+    border-style: solid dashed dashed;
+    border-color: #fff transparent transparent;
+    border-top-color: rgb(255, 255, 255);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all .2s;
+    -webkit-transition: all .2s;
+    position: absolute;
+    top: 50%;
+    right: 3px;
+    margin-top: -3px;
+    border-width: 6px;
+    border-top-color: rgba(11, 11, 11, 0.7);
+}
+
+.layui-nav-img {
+    width: 42px;
+    height: 42px;
+    margin-right: 10px;
+    border-radius: 50%;
+}
+
+.layui-nav-child {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 80px;
+    min-width: 100%;
+    line-height: 36px;
+    padding: 5px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,.12);
+    border: 1px solid #d2d2d2;
+    background-color: #fff;
+    z-index: 100;
+    border-radius: 2px;
+    white-space: nowrap;
+}

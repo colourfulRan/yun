@@ -1,20 +1,57 @@
 package cqjtu.ds.yun.web;
 
+import cqjtu.ds.yun.result.ExecuteResult;
+import cqjtu.ds.yun.service.UserService;
 
+import cqjtu.ds.yun.service.domain.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
+
+import javax.servlet.http.HttpSession;
 
 @Controller
-public class LoginController {
+@SessionAttributes(value={"uid","uname","uphoto"})
+public class LoginController
+{
+    private Logger logger = LoggerFactory.getLogger(LoginController.class);
 
-    @RequestMapping("home")
-    public String home(){
-        return "home";
+    @Autowired
+    private UserService userService;
+
+    @RequestMapping("/login")
+    public String login(String username, String password, Model model)//
+    {
+        logger.info("username:{}",username);
+        logger.info("password:{}",password);
+        //调用远程服务
+        ExecuteResult<User> loginResult=userService.login(username,password);
+        //User u1=
+        if(loginResult.isExecuted()&&loginResult.isSuccess())
+        {
+            model.addAttribute("uid",loginResult.getData().getUserid());
+            model.addAttribute("uname",loginResult.getData().getUsername());
+            model.addAttribute("uphoto",loginResult.getData().getPhoto());
+            return "main" ;
+        }
+
+        else
+        {
+            return "index";
+
+        }
     }
-
-
-    @RequestMapping("my")
-    public String my(){
-        return "my";
+/*
+    @RequestMapping("/test")
+    public String test(HttpSession session)
+    {
+        logger.info("user1:{}",session.getAttribute("ul"));
+        return "test";
     }
+*/
 }
