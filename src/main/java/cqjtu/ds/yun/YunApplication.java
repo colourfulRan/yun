@@ -1,5 +1,6 @@
 package cqjtu.ds.yun;
 
+import com.alibaba.dubbo.spring.boot.annotation.EnableDubboConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
@@ -8,6 +9,7 @@ import org.springframework.web.multipart.MultipartResolver;
 
 import javax.servlet.MultipartConfigElement;
 
+@EnableDubboConfiguration
 @SpringBootApplication
 public class YunApplication {
 

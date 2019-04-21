@@ -110,7 +110,7 @@ public class PaillierUtils {
         return c.modPow(lambda, n_square).subtract(BigInteger.ONE).divide(n).multiply(u).mod(n);
     }
 
-   /* public static void main(String []args){
+    public static void main(String []args){
 
 
         PaillierUtils paillierUtils=new PaillierUtils();
@@ -119,9 +119,16 @@ public class PaillierUtils {
         BigInteger m2=new BigInteger("-70a79ac248f60d34f63c02a4e9afa049",16);
         System.out.println("原文是："+m1+"和"+m2);
 
-        //将m1,m2加密得到em1,em2
+        BigInteger e=new BigInteger("32663");
+        BigInteger d=new BigInteger("23");
+        BigInteger n=new BigInteger("42167");
+        //盲因子
+        BigInteger factor=new BigInteger("37");
+        BigInteger blindMsg=BlindSignature.blindHideMsg(m2,factor,e,n);
+
+        //将m1,m2加密得到em1,em2(盲签名)
         BigInteger em1=paillierUtils.Encryption(m1);
-        BigInteger em2=paillierUtils.Encryption(m2);
+        BigInteger em2=paillierUtils.Encryption(blindMsg);
 
         //加密后的结果
         System.out.println("密文是："+em1+"  "+em2);
@@ -133,12 +140,13 @@ public class PaillierUtils {
         System.out.println("***********************异或********************");
        // BigInteger xor=m1.xor(m2).mod(paillierUtils.n);
         BigInteger sub=m1.add(m2);
-        System.out.println("明文异或："+sub);
+        System.out.println("明文相加："+sub);
 
         //求密文数值异或
       // BigInteger exor=em1.xor(em2).mod(paillierUtils.n_square);
         BigInteger esub=em1.multiply(em2).mod(paillierUtils.n_square);
-        System.out.println("密文异或："+esub);
+        System.out.println("密文相加："+esub);
+
         System.out.println("密文异或解密："+paillierUtils.Decryption(esub));
-    }*/
+    }
 }

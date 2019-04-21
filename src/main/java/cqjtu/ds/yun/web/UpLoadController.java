@@ -1,7 +1,9 @@
 package cqjtu.ds.yun.web;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import cqjtu.ds.yun.service.LoadFileService;
 import cqjtu.ds.yun.utils.AliyunOSSUtil;
+import cqjtu.ds.yunserverfacade.FileService;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.LoggerFactory;
@@ -26,8 +28,8 @@ public class UpLoadController {
     private AliyunOSSUtil aliyunOSSUtil;
     @Autowired
     private LoadFileService loadFileService;
-
-
+   /* @Reference
+    private FileService fileService;*/
     @RequestMapping("/test")
     public String test(){
         return "test";
