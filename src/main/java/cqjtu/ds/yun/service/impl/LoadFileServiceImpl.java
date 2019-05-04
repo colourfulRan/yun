@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 
 import javax.servlet.http.HttpSession;
+
 import java.io.*;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPrivateKey;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import static cqjtu.ds.yun.utils.BlindSignature.blindSignature;
+
 
 
 @Component
@@ -37,6 +39,7 @@ public class LoadFileServiceImpl implements LoadFileService {
         BigInteger blindSig=getBlindSignatureSerectKey(blindMsg);
         String serectKey=reductionSignature(blindSig);
         File encrypfile=new File("encrypfile");
+
         encrypfile=AESUtils.encryptFile(file,encrypfile,serectKey);
         String fileHash=MD5Utils.getMD5ByFile(encrypfile);
         //云端不存在相同文件
@@ -70,9 +73,6 @@ public class LoadFileServiceImpl implements LoadFileService {
         domainFile.setFileSize((int) Math.ceil(file.length()/1024.0));
        // SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
        // Date date=new Date();
-        //TimeZone pst = TimeZone.getTimeZone("Etc/GMT-8");
-        //Timestamp time=new Timestamp(System.currentTimeMillis());
-
         domainFile.setUpdateDate(new Timestamp(System.currentTimeMillis()));
         domainFile.setUserId(1);
         domainFile.setFileValid(0);

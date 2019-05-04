@@ -1,0 +1,15 @@
+.layui-input-inline {
+    display: inline-block;
+    vertical-align: middle;
+    width: 120px;
+}
+
+.layui-form-label {
+    float: left;
+    display: block;
+    padding: 9px 15px;
+    width: 100px;
+    font-weight: 400;
+    line-height: 20px;
+    text-align: right;
+}
