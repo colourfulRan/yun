@@ -9,62 +9,135 @@
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" href="layui/css/layui.css">
-    <script type="text/javascript" src="layui/jquery-2.2.3.min.js"></script>
+    <link rel="stylesheet" href="../static/layui/css/layui.css">
+    <link rel="stylesheet" href="../static/layui/css/image.css">
+    <link rel="stylesheet" href="../static/layui/css/recycle.css">
+    <link rel="stylesheet" href="../static/layui/css/ttb_icon/iconfont.css">
+    <script type="text/javascript" src="../static/layui/jquery-2.2.3.min.js"></script>
 </head>
 <body>
-
-
 
 <!--头部工具栏-->
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-container">
         <div class="layui-row">
-                <button class="layui-btn layui-btn-primary  layui-btn-sm"  lay-event="upload">
-                    <i class="layui-icon">&#xe62f;</i>
+            <div class="layui-col-md8">
+
+                <button class="layui-btn layui-btn-primary  layui-btn-sm"  lay-event="reduction">
+                    <i class="layui-icon">&#x1005;</i>
                     <span>还原</span>
                 </button>
-
                 <button class="layui-btn layui-btn-primary  layui-btn-sm" lay-event="del">
                     <i class="layui-icon">&#xe640;</i>
                     <span>删除</span>
                 </button>
-
-            <button class="layui-btn layui-btn-primary  layui-btn-sm"  lay-event="download">
-                <i class="layui-icon">&#xe601;</i>
+                <button class="layui-btn layui-btn-primary  layui-btn-sm"  lay-event="delAll">
                 <span>清空回收站</span>
-            </button>
+                </button>
+
+                <button class="layui-btn layui-btn-primary  layui-btn-sm" text="刷新"lay-event="shuaxin">
+                    <i class="layui-icon">&#xe9aa;</i>
+                </button>
             </div>
 
-
-            </div>
+        <div class=" layui-col-md4">
+            <label class="layui-form-label">时长</label>
+            <div class="layui-input-inline">
+                <select name="quiz1">
+                    <option value="">请选择时长</option>
+                    <option  selected="">10天</option>
+                    <option >15天</option>
+                    <option >1个月</option>
+                </select>
+        </div>
         </div>
     </div>
+    </div>
 </script>
-
 
 <!--表格-->
 <table class="layui-hide" id="recycle_bin" lay-filter="test"></table>
 
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="reduction1">还原</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del1">删除</a>
+</script>
+
+
+<script type="text/html" id="type_icon">
+
+    {{# if (d.typeId==1){ }}
+    <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-tupian"></use>
+    </svg>
+    <span>{{d.fileName}}</span>
+
+    {{# } else if(d.typeId==3) { }}
+    <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-shipin"></use>
+    </svg>
+    <span>{{d.fileName}}</span>
+
+
+    {{# } else if(d.typeId==4) { }}
+
+    <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-yinle"></use>
+    </svg>
+    <span>{{d.fileName}}</span>
+
+    {{# } else if(d.typeId==5) { }}
+        <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-TXT"></use>
+        </svg>
+    <span>{{d.fileName}}</span>
+
+
+    {{# } else if(d.typeId==6) { }}
+    <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-WPStubiao"></use>
+    </svg>
+    <span>{{d.fileName}}</span>
+
+
+    {{# } else if(d.typeId==7) { }}
+
+    <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-word"></use>
+    </svg>
+    <span>{{d.fileName}}</span>
+
+    {{# } else if(d.typeId==8) { }}
+    <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-ppt"></use>
+    </svg>
+    <span>{{d.fileName}}</span>
+
+    {{# } else { }}
+
+    <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-TXT"></use>
+    </svg>
+    <span>{{d.fileName}}</span>
+    {{# } }}
+</script>
+
 
 
 <!--记住引入jq!!!!-->
-<script src="layui/layui.js"></script>
-
-
+<script src="../static/layui/layui.js"></script>
+<script src="../static/layui/css/ttb_icon/iconfont.js"></script>
 
 <script  th:inline="none">
     //JavaScript代码区域
-    /**
-     layui.use('element', function(){
-    var element = layui.element;
-});
-     */
 
-    layui.use(['table', 'element'], function(){
+
+    layui.use(['table', 'element','util'], function(){
         var table = layui.table //表格
             ,element = layui.element //元素操作
+            ,  util = layui.util;//工具集
 
 
         //执行一个 table 实例
@@ -78,128 +151,175 @@
             ,toolbar: '#toolbarDemo' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
             ,cols: [[ //表头
                  {type:'checkbox', fixed: 'left'}
-                ,{field:'filename', width:400, title: '文件名', sort: true }
-                    /*return 'ID：'+ d.id +'，标题：<span style="color: #c00;">'+ d.title +'</span>'*/
-                ,{field:'deldate', width:400, title: '删除日期', sort: true}
-                ,{field:'filesize', width:200, title: '大小'}
-                ,{field:'', width:200, title: '有效时间'}
-
+                ,{field:'fileName', width:260, title: '文件名', sort: true,templet:"#type_icon" }
+                , {
+                    field: 'recentDate', width: 260, title: '删除日期', sort: true,
+                    templet: '<div>{{ layui.util.toDateString(d.delDate) }}</div>'
+                }
+                ,{field:'fileSize', width:260, title: '大小'}
+                ,{field:'fileValid', width:200, title: '有效时间'}
+                ,{fixed: 'right', width: 200, align:'center', toolbar: '#barDemo'}
             ]]
         });
 
-/*
-        //头工具栏事件
-        table.on('toolbar(test)', function(obj){
-            var checkStatus = table.checkStatus(obj.config.id)
-                ,data = checkStatus.data; //获取选中的数据;
-            switch(obj.event){
-                case 'upload':
-                    layer.msg('上传');
-                    break;
-                case 'download':
-                    if(data.length==0)
-                    {
-                        layer.msg('请选择数据');
-                    }
-                    else if(data.length>=1)
-                    {
-                        layer.alert(JSON.stringify(data));
-                    }
-                    break;
-                case 'del':
-                    if(data.length==0)
-                    {
-                        layer.msg('请选择要删除的行');
-                    }
-                    else if(data.length>=1)
-                    {
-                        var temID = "";
-                        //批量获取选中行的评估模板ID
-                        for (i = 0; i < data.length; i++) {
-                            if (temID == "") {
-                                temID = data[i].fileid;
-                            }
-                            else {
-                                temID = data[i].fileid+ "," + temID;
-                            }
-                        }
 
-                        var id= checkStatus.data[0].fileid;
-                        layer.confirm('真的删除行么', function(index)
-                        {
-                            $.ajax(
+
+                //头工具栏事件
+                table.on('toolbar(test)', function(obj){
+                    var checkStatus = table.checkStatus(obj.config.id)
+                        ,data = checkStatus.data; //获取选中的数据;
+                  switch(obj.event){
+                            case 'reduction':
+                                if(data.length==0)
                                 {
-                                    url: "image_del",
-                                    type: "post",
-                                    dataType: "json",
-                                    async: false,
-                                    data: {
-                                        fileid:temID
-                                    },
-                                    success: function (map)
-                                    {
-                                        var json = eval(map); //数组
-                                        //能够正常返回数据才为成功
-                                        //layer.alert('删除成功');
-                                        var state=map.data;
-                                        if (state)
-                                        {
-                                            layer.msg('删除成功');
-                                            table.reload('image_li', {});
-                                        }
-                                        else
-                                        {
-                                            layer.msg('删除失败');
-                                        }
-                                    },
-                                    error: function () {
-                                        layer.alert("失败");
-                                    }
-                                });
-                        });
-                    }
-                    break;
-                case'share':
-                    var data=checkStatus.data;
-                    if(data.length==0)
-                    {
-                        layer.msg('请选择数据');
-                    }
-                    else if(data.length>=1)
-                    {
-                        layer.msg('分享选中数据');
-                    }
-                    break;
-                case 'shuaxin':
-                    //layer.msg('刷新数据');
-                    table.reload('image_li', {});
-                    break;
-                case 'search':
-                    var filename = $('#search_Filename').val();//获取表格中的值
-                    console.log(filename);
-                    table.reload('image_li',
-                        {
-                            url: "search_filename",
-                            type: "post",
-                            dataType: "json",
-                            async: false,
-                            page: {
-                                curr: 1 //重新从第 1 页开始
-                            }
-                            ,
-                            where:
-                                {
-                                    filename:filename
+                                    layer.msg('请选择要还原的行');
                                 }
-                        });
-                    break;
+                                else if(data.length>=1)
+                                {
+                                    var temID = "";
+                                    //批量获取选中行的评估模板ID
+                                    for (i = 0; i < data.length; i++) {
+                                        if (temID == "") {
+                                            temID = data[i].fileId;
+                                        }
+                                        else {
+                                            temID = data[i].fileId+ "," + temID;
+                                        }
+                                    }
 
-            };
-        });*/
+                                    var id= checkStatus.data[0].fileId;
+                                    layer.confirm('确定还原选中的文件吗？', function(index)
+                                    {
+                                        $.ajax(
+                                            {
+                                                url: "recycle_reduction",
+                                                type: "post",
+                                                dataType: "json",
+                                                async: false,
+                                                data: {
+                                                    fileid:temID
+                                                },
+                                                success: function (map)
+                                                {
+                                                    var json = eval(map); //数组
+                                                    //能够正常返回数据才为成功
+                                                    //layer.alert('删除成功');
+                                                    var state=map.data;
+                                                    if (state)
+                                                    {
+                                                        layer.msg('还原成功');
+                                                        table.reload('recycle_bin', {});
+                                                    }
+                                                    else
+                                                    {
+                                                        layer.msg('还原失败');
+                                                    }
+                                                },
+                                                error: function () {
+                                                    layer.alert("失败");
+                                                }
+                                            });
+                                    });
+                                }
+                                break;
 
+                      case 'shuaxin':
+                          //layer.msg('刷新数据');
+                          table.reload('recycle_bin', {});
+                          break;
+
+                        case 'del':
+                            if(data.length==0)
+                            {
+                                layer.msg('请选择要删除的行');
+                            }
+                            else if(data.length>=1)
+                            {
+                                var temID = "";
+                                //批量获取选中行的评估模板ID
+                                for (i = 0; i < data.length; i++) {
+                                    if (temID == "") {
+                                        temID = data[i].fileId;
+                                    }
+                                    else {
+                                        temID = data[i].fileId+ "," + temID;
+                                    }
+                                }
+
+                                var id= checkStatus.data[0].fileId;
+                                layer.confirm('确定删除选中的行吗？', function(index)
+                                {
+                                    $.ajax(
+                                        {
+                                            url: "recycle_del",
+                                            type: "post",
+                                            dataType: "json",
+                                            async: false,
+                                            data: {
+                                                fileid:temID
+                                            },
+                                            success: function (map)
+                                            {
+                                                var json = eval(map); //数组
+                                                //能够正常返回数据才为成功
+                                                //layer.alert('删除成功');
+                                                var state=map.data;
+                                                if (state)
+                                                {
+                                                    layer.msg('删除成功');
+                                                    table.reload('recycle_bin', {});
+                                                }
+                                                else
+                                                {
+                                                    layer.msg('删除失败');
+                                                }
+                                            },
+                                            error: function () {
+                                                layer.alert("错误");
+                                            }
+                                        });
+                                });
+                            }
+                            break;
+                        case'delAll':
+                            layer.confirm('确定清空回收站吗？', function()
+                            {
+                                $.ajax(
+                                    {
+                                        url: "recycle_delAll",
+                                        type: "post",
+                                        dataType: "json",
+                                        async: false,
+                                        data: {
+                                            //fileid:temID
+                                        },
+                                        success: function (map)
+                                        {
+                                            var json = eval(map); //数组
+                                            var state=map.data;
+                                            if (state)
+                                            {
+                                                layer.msg('清除成功');
+                                                table.reload('recycle_bin', {});
+                                            }
+                                            else
+                                            {
+                                                layer.msg('清除失败');
+                                            }
+                                        },
+                                        error: function () {
+                                            layer.alert("错误");
+                                        }
+                                    });
+                            });
+                            break;
+                        case 'shezhi':
+                            layer.msg('选择保存天数');
+                           // table.reload('image_li', {});
+                            break;
+                  };
     });
-
-
+    });
 </script>
 </body>
 </html>
