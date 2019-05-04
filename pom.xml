@@ -20,12 +20,12 @@
 
 	<dependencies>
 		<!--dubbo-->
-		<dependency>
+		<!--<dependency>
 			<groupId>com.alibaba.spring.boot</groupId>
 			<artifactId>dubbo-spring-boot-starter</artifactId>
 			<version>2.0.0</version>
 		</dependency>
-		<!--zkclient-->
+		&lt;!&ndash;zkclient&ndash;&gt;
 		<dependency>
 			<groupId>com.github.sgroschupf</groupId>
 			<artifactId>zkclient</artifactId>
@@ -35,6 +35,13 @@
 			<groupId>cqjtu.ds</groupId>
 			<artifactId>yunserver-facade</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+		</dependency>-->
+
+		<!--引入BouncyCastle的包-->
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15on</artifactId>
+			<version>1.56</version>
 		</dependency>
 		<!--JPA-->
 		<dependency>
@@ -68,8 +75,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-
 
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>

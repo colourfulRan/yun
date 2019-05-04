@@ -1,9 +1,9 @@
 package cqjtu.ds.yun.web;
 
-import com.alibaba.dubbo.config.annotation.Reference;
+
 import cqjtu.ds.yun.service.LoadFileService;
 import cqjtu.ds.yun.utils.AliyunOSSUtil;
-import cqjtu.ds.yunserverfacade.FileService;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.LoggerFactory;
@@ -17,11 +17,12 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class UpLoadController {
     private final org.slf4j.Logger logger= LoggerFactory.getLogger(getClass());
-    private static final String TO_PATH="upLoad";
 
 
     @Autowired
@@ -30,23 +31,27 @@ public class UpLoadController {
     private LoadFileService loadFileService;
    /* @Reference
     private FileService fileService;*/
-    @RequestMapping("/test")
-    public String test(){
-        return "test";
+    @RequestMapping("test")
+    @ResponseBody
+    public Map<String,Object> test(String fileId){
+        System.out.println("dddd");
+        Map<String ,Object> map=new HashMap<>();
+        map.put("msg",fileId+"哈哈");
+        System.out.println(fileId);
+        return map;
     }
 
-    @RequestMapping("/toUpLoadFile")
-    public String toUpLoadFile(){
-        return TO_PATH;
-    }
 
     /**文件上传**/
+    @ResponseBody
     @RequestMapping("uploadFile")
-    public String uploadBlog(@RequestParam("file")MultipartFile file,HttpServletRequest request){//MultipartFile是spring类型，代表HTML中form data方式上传的文件，包含二进制数据+文件名称。       logger.info("文件上传");
+    public Map<String,Object> uploadBlog(@RequestParam("file")MultipartFile file, HttpServletRequest request){//MultipartFile是spring类型，代表HTML中form data方式上传的文件，包含二进制数据+文件名称。       logger.info("文件上传");
         HttpSession session=request.getSession();
+        Map<String,Object> map=new HashMap<>();
         String filename=file.getOriginalFilename();
+        String fileType=file.getContentType();
         session.setAttribute("fileName",filename);
-        System.out.println(filename);
+        //System.out.println(filename);
         long fileLength=file.getSize();
         DecimalFormat df=new DecimalFormat(".00");
         if(fileLength<1024){
@@ -67,17 +72,23 @@ public class UpLoadController {
                     file.transferTo(newFile);//将上传文件写入目标文件
                     //上传到OSS
                     String key="time1128";
-                    String url=aliyunOSSUtil.upLoad(newFile,session,key);
-                 //   loadFileService.uploadFile(newFile,fileType,session);
+                  //  String url=aliyunOSSUtil.upLoad(newFile,session,key);
+                    map.put("code",0);
+                    map.put("msg","上传成功！");
+                    map.put("data","");
+                    loadFileService.uploadFile(newFile,fileType,session);
                     //删除临时文件
                     newFile.delete();
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
-            //return "上传失败："+e.getMessage();
+            map.put("code",1);
+            map.put("msg","上传失败！");
+            //src.put("src","G://月度考核表模板.doc");
+            map.put("data","");
         }
-        return "upload_success";//上传成功页面
+        return map;
     }
 
     /**获取实时上传进度**/
@@ -108,7 +119,10 @@ public class UpLoadController {
     @ResponseBody
     public String resetPercent(HttpServletRequest request){
         HttpSession session=request.getSession();
-        session.setAttribute("upload_percent",0);
+        session.setAttribute("uploadPercent",0);
+        session.setAttribute("uploadSize","0KB");
+        session.setAttribute("fileSize","0KB");
+        session.setAttribute("fileName",null);
         return "重置进度";
     }
 

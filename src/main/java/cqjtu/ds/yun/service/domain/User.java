@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name="user")
@@ -20,6 +21,11 @@ public class User {
     private String username;
     private String password;
     private String photo;
+    private Date birthday;
+    private String sex;
+    private String blood_type;
+    private String birth_place;
+    private String live_place;
 
     public Integer getUserId() {
         return userId;

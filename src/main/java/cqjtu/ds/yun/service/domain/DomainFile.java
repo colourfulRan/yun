@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Date;
 
 
@@ -16,7 +17,12 @@ import java.util.Date;
 public class DomainFile {
 
     @Id
-    private String fileId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)//自定义生成策略（自增策略）
+    private Integer fileId;
+
+    private Integer parentId;
+
+    private String fileHash;
 
     private int typeId;
 
@@ -27,7 +33,7 @@ public class DomainFile {
     private String filePath;
 
     //上传日期
-    private Date updateDate;
+    private Timestamp updateDate;
 
     private int fileSize;
 
@@ -35,7 +41,9 @@ public class DomainFile {
 
     private  boolean isDel;
 
-    private Date delDate;
+    private Timestamp  delDate;
+
+    private Integer fileValid;
 
 
 }

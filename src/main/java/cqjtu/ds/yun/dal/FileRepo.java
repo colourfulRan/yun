@@ -27,4 +27,6 @@ public interface FileRepo extends JpaRepository<DomainFile,Integer>
 
     Integer countAllByUserIdAndTypeIdAndIsDelAndFileNameLike(Integer userId, Integer typeId,Boolean isDel,String fileName);
 
+    DomainFile findByFileId(int fileId);
+
 }

@@ -118,11 +118,11 @@ public class FileController
     {
         logger.info("图片列表！！！");
         Integer userid= (Integer) session.getAttribute("uid");//通过session获取userid
-        Integer count=fileService.ImageCount(userid,2,false);//获取数据条数
+        Integer count=fileService.ImageCount(userid,1,false);//获取数据条数
        // int pageNum=count % limit == 0 ? count / limit : count/limit+1;//页数
         //pageNum总是从0开始，表示查询页，limit指每页的期望行数
         Pageable pageRequest = PageRequest.of(page-1,limit);
-        Page<DomainFile> pageResult = fileService.findAllFiles(userid,2,false,pageRequest);
+        Page<DomainFile> pageResult = fileService.findAllFiles(userid,1,false,pageRequest);
         Map<String, Object> map = null;
         map = new LinkedHashMap<String, Object>();
         map.put("code",0);
