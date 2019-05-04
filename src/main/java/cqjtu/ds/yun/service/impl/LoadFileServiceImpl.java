@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -29,10 +30,10 @@ public class LoadFileServiceImpl implements LoadFileService {
         String key=MD5Utils.getMD5ByFile(file);
         File encrypfile=new File("encrypfile");
         encrypfile=AESUtils.encryptFile(file,encrypfile,key);
-        String fileId=MD5Utils.getMD5ByFile(encrypfile);
-        aliyunOSSUtil.upLoad(encrypfile,session,fileId);
+        String fileHash=MD5Utils.getMD5ByFile(encrypfile);
+        aliyunOSSUtil.upLoad(encrypfile,session,fileHash);
         DomainFile domainFile=new DomainFile();
-        domainFile.setFileId(fileId);
+        domainFile.setFileHash(fileHash);
         domainFile.setFileName(file.getName());
         domainFile.setSecretKey(key);
         domainFile.setTypeId(getFileType(fileType));
@@ -40,7 +41,7 @@ public class LoadFileServiceImpl implements LoadFileService {
         domainFile.setFileSize((int) Math.ceil(file.length()/1024.0));
        // SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
        // Date date=new Date();
-        domainFile.setUpdateDate(new Date());
+        domainFile.setUpdateDate(new Timestamp(System.currentTimeMillis()));
         domainFile.setUserId(1);
        // domainFile.setDel(false);
         fileRepo.save(domainFile);
