@@ -119,7 +119,9 @@ public class FileController
     {
         logger.info("图片列表！！！");
         Integer userid= (Integer) session.getAttribute("uid");//通过session获取userid
+
         Integer count=fileService.FCount(userid,1,false);//获取数据条数
+
         Pageable pageRequest = PageRequest.of(page-1,limit);
         Page<DomainFile> pageResult = fileService.findAllFiles(userid,1,false,pageRequest);
         Map<String, Object> map = null;

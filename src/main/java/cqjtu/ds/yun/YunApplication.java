@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartResolver;
 
 import javax.servlet.MultipartConfigElement;
 
+/*@EnableDubboConfiguration*/
 @SpringBootApplication
 @EnableScheduling    //开启定时器调度任务
 public class YunApplication {

@@ -13,13 +13,48 @@
     <link rel="stylesheet" href="../static/layui/css/layui.css">
     <link rel="stylesheet" href="../static/layui/css/image.css">
     <link rel="stylesheet" href="../static/layui/css/font_view/iconfont.css">
+
+    <!--<link rel="stylesheet" href="../static/layui/css/image_icon/iconfont.css">-->
+    <!--<script type="text/javascript" src="../static/jquery-1.11.3.min.js"></script>-->
+
     <link rel="stylesheet" href="../static/layui/css/ttb_icon/iconfont.css">
+
     <script type="text/javascript" src="../static/layui/jquery-2.2.3.min.js"></script>
+    <script type="text/javascript" src="../static/bootstrap/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css"  media="all">
+
+    <script src="../static/js/jquery-ui.min.js"></script>
 </head>
 <body>
 
 
-
+<!-- 进度条模态框 -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="fileName"></h4>
+            </div>
+            <div class="row">
+                <div class="col-md-8"><div class="modal-body">
+                    <div class="progress">
+                        <div id="progress" class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                            <span class="sr-only" id="per">0%</span>
+                        </div>
+                    </div>
+                </div></div>
+                <div class="col-md-4">
+                    <div class="center-block" style="margin-top: 15px">
+                        <span id="uploadSize"></span>/
+                        <span id="fileSize"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <!--头部工具栏-->
 
 <script type="text/html" id="toolbarDemo">
@@ -27,14 +62,14 @@
        <div class="layui-row">
         <div class="layui-col-md6">
 
+
             <button class="layui-btn layui-btn-primary  layui-btn-sm"  lay-event="choose_file">
                  <i class="layui-icon"> &#xe621;</i>
                 <span>选择文件</span>
             </button>
 
-            <button class="layui-btn layui-btn-primary  layui-btn-sm"  lay-event="upload">
-                <i class="layui-icon">&#xe62f;</i>
-                <span>上传</span>
+            <button type="button" class="layui-btn layui-btn-sm" id="uploadDemo"   lay-data="{accept: 'file'}" style="margin-right: 10px" >
+                <i class="layui-icon">&#xe67c;</i>上传
             </button>
             <button class="layui-btn layui-btn-primary  layui-btn-sm"  lay-event="download">
                 <i class="layui-icon">&#xe601;</i>
@@ -77,9 +112,11 @@
 
 
 <script type="text/html" id="barDemo">
+
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">下载</a>
+    <a class="layui-btn layui-btn-xs"  lay-event="download">下载</a>
+
 </script>
 
 
@@ -95,10 +132,17 @@
    //JavaScript代码区域
 
 
+   layui.use(['upload','table', 'element'], function(){
+       var table = layui.table //表格
+           ,element = layui.element //元素操作
+           ,upload = layui.upload //上传
+
+
    layui.use(['table', 'element','util'], function(){
        var table = layui.table //表格
            ,element = layui.element //元素操作
            ,  util = layui.util;//工具集
+
 
 
    //执行一个 table 实例
@@ -141,14 +185,29 @@
        }
    });
 
+       //上传
+       upload.render({
+           elem: '#uploadDemo'
+           ,url: 'uploadFile' //上传接口
+           ,before: function(){
+               interval();
+           }
+           ,done: function(res){
+               layer.msg(res.msg);
+           }
+           ,error: function () {
+               layer.alert("失败");
+           }
+       });
 
 
 
-      //头工具栏事件
+       //头工具栏事件
        table.on('toolbar(test)', function(obj){
           var checkStatus = table.checkStatus(obj.config.id)
               ,data = checkStatus.data; //获取选中的数据;
-           switch(obj.event){
+
+
                case 'choose_file':
                    layer.msg('请选择文件');
                    break;
@@ -156,6 +215,7 @@
                case 'upload':
                    layer.msg('上传');
                    break;
+
                case 'download':
                    if(data.length==0)
                    {
@@ -279,11 +339,108 @@
                layer.close(index);
                //向服务端发送删除指令
            });
-       } else if(layEvent === 'edit'){
-           layer.msg('编辑操作');
+       } else if(layEvent === 'download'){
+           //layer.msg(data.fileId);
+           download(data.fileId)
+
        }
    });
    });
+
+
+   /*function download(fileId) {
+       $.ajax({
+           type:"post",
+           url:"/downloadFile",
+           dataType:'json',
+           data:{fileId:fileId},
+           success:function (res) {
+               layer.msg(res.msg);
+           },
+           error:function () {
+               layer.alert("失败");
+           }
+       }) ;
+   }*/
+
+   /*通过流方式下载文件，提交方式必须是Http请求，不能是ajax请求*/
+   function download(fileId) {
+       var form=$("<form>");
+       form.attr("style","display:none");
+       form.attr("target","");
+       form.attr("method","post");
+       form.attr("action","/downloadFile");
+       var input=$('<input type="hidden" name="fileId" id="file_iid"/>');
+       input.attr("value",fileId);
+       form.append(input);
+       $("body").append(form);
+       form.submit();
+   }
+
+   /*进度条模态框位置可移动*/
+   $(function(){
+       $(".modal-dialog").draggable();
+   })
+
+   //每500ms获取一次图片上传进度
+   var intervalId;
+   function interval() {
+       $('#myModal').modal('show');
+       //轮询时间
+       intervalId=window.setInterval(showPercent,500)
+   }
+
+   function showPercent() {
+       $.ajax({
+           type:"POST",
+           url:"percent",
+           dataType:"json",
+           success:function (msg) {
+               var per="0%";
+               var per=msg.uploadPercent+"%";
+               console.log(per);
+               $("#fileName").text(msg.fileName);
+               $("#progress").css("width",per);//图片上传进度
+               $("#uploadSize").text(msg.uploadSize);
+               $("#fileSize").text(msg.fileSize);
+               $("#per").html(per);
+               if(msg.uploadPercent>=100){
+                   $('#myModal').modal('hide');
+                   stopInterval();
+                   clearPercent();
+               }
+           },
+           error:function (data) {
+               $('#myModal').modal('hide');
+               console.log(data);
+               stopInterval();
+           }
+       });
+   }
+
+   //清除进度数据
+   function clearPercent() {
+       $.ajax({
+           type:"POST",
+           contentType:false,
+           async:false,
+           url:"resetPercent",
+           success:function () {
+               $("#fileName").text(null);
+               $("#progress").css("width","0%");//图片上传进度
+               $("#uploadSize").text("0");
+               $("#fileSize").text("0");
+               $("#per").html("0%");
+           }
+       });
+   }
+
+   //清除时间
+   function stopInterval() {
+       window.clearInterval(intervalId);
+   }
+
+
 
 </script>
 </body>
