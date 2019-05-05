@@ -51,7 +51,7 @@ public class UpLoadController {
         String filename=file.getOriginalFilename();
         String fileType=file.getContentType();
         session.setAttribute("fileName",filename);
-        //System.out.println(filename);
+        System.out.println(filename);
         long fileLength=file.getSize();
         DecimalFormat df=new DecimalFormat(".00");
         if(fileLength<1024){
