@@ -4,12 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.HashMap;
 
 @Entity
 @Table(name="user")
 @Getter
 @Setter
-public class User {
+public class User implements Serializable {
 
     @Id//主键
     @GeneratedValue(strategy = GenerationType.IDENTITY)//自定义生成策略（自增策略）
@@ -20,6 +22,7 @@ public class User {
     private String username;
     private String password;
     private String photo;
+
 
     public Integer getUserId() {
         return userId;
