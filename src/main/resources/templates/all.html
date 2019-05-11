@@ -1,10 +1,658 @@
 <!DOCTYPE html>
 <html lang="en">
+<!--引入thymeleaf-->
+
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <title>全部文件</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../static/layui/css/layui.css">
+    <link rel="stylesheet" href="../static/layui/css/image.css">
+    <link rel="stylesheet" href="../static/layui/css/font_view/iconfont.css">
+    <link rel="stylesheet" href="../static/layui/css/tb_icon/iconfont.css">
+    <link rel="stylesheet" href="../static/layui/css/all.css">
+
+    <link rel="stylesheet" href="../static/layui/css/image_icon/iconfont.css">
+    <script type="text/javascript" src="../static/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="../static/layui/jquery-2.2.3.min.js"></script>
+    <script type="text/javascript" src="../static/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css"  media="all">
+    <script src="../static/js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="../static/layui/jquery-2.2.3.min.js"></script>
+    <script src="../static/layui/layui.js"></script>
+    <script src="../static/layui/css/tb_icon/iconfont.js"></script>
+
+
 </head>
 <body>
-全部文件！！
+
+<!-- 进度条模态框 -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="fileName"></h4>
+            </div>
+            <div class="row">
+                <div class="col-md-8"><div class="modal-body">
+                    <div class="progress">
+                        <div id="progress" class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                            <span class="sr-only" id="per">0%</span>
+                        </div>
+                    </div>
+                </div></div>
+                <div class="col-md-4">
+                    <div class="center-block" style="margin-top: 15px">
+                        <span id="uploadSize"></span>/
+                        <span id="fileSize"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <div class="layui-container">
+        <div class="layui-row">
+            <div class="layui-col-md6">
+                <button class="layui-btn layui-btn-primary  layui-btn-sm"  style="padding: 5px;padding-top: inherit;" title="上一级" data-type="up">
+                    <i class="layui-icon">&#xe603;</i>
+                </button>
+
+                <button class="layui-btn layui-btn-primary  layui-btn-sm"  style="margin-left: 2px;padding: 5px;padding-top: inherit;" title="下一级" data-type="down">
+                    <i class="layui-icon">&#xe602;</i>
+                </button>
+                <button type="button" class="layui-btn layui-btn-sm" id="uploadDemo"   lay-data="{accept: 'file'}" style="margin-right: 10px" >
+                    <i class="layui-icon">&#xe67c;</i>上传
+                </button>
+                <button class="layui-btn layui-btn-primary  layui-btn-sm"  data-type="build_file">
+                    <svg class="icon" aria-hidden="true">
+                        <use xlink:href="#icon-wangpanxinjianwenjianjia-copy"></use>
+                    </svg>
+                    <span>新建文件夹</span>
+                </button>
+
+                <button class="layui-btn layui-btn-primary  layui-btn-sm" data-type="del">
+                    <i class="layui-icon">&#xe640;</i>
+                    <span>删除</span>
+                </button>
+            </div>
+
+            <div class=" layui-col-md3">
+                <div class="layui-input-block">
+                    <input name="search_Allname" id="search_Allname"  autocomplete="off" placeholder="文件名模糊查询" class="layui-input1">
+                </div>
+            </div>
+
+            <div class=" layui-col-md2" >
+                <i class="layui-icon1" data-type="search">&#xe615;</i>
+            </div>
+
+            <div class=" layui-col-md1">
+                <button class="layui-btn layui-btn-primary   layui-btn-xs" title="刷新" data-type="shuaxin">
+                    <span class="layui-icon">&#xe669;</span>
+                </button>
+                <button class="layui-btn layui-btn-primary   layui-btn-xs" title="切换视图模式" data-type="change">
+                    <span class="iconfont">&#xec6b;</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+<!--表格-->
+<table class="layui-hide" id="all_li" lay-filter="test"></table>
+
+
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="move">移动到</a>
+    <a class="layui-btn  layui-btn-primary layui-btn-xs" lay-event="download">下载</a>
+</script>
+
+
+<script type="text/html" id="type_icon">
+
+    {{# if (d.typeId==0){ }}
+    <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-tubiaozhizuomoban"></use>
+    </svg>
+    <span>{{d.fileName}}</span>
+
+    {{# }else if (d.typeId==1){ }}
+    <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-tupian"></use>
+    </svg>
+    <span>{{d.fileName}}</span>
+
+    {{# } else if(d.typeId==3) { }}
+    <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-shipin"></use>
+    </svg>
+    <span>{{d.fileName}}</span>
+
+
+    {{# } else if(d.typeId==4) { }}
+
+    <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-yinle"></use>
+    </svg>
+    <span>{{d.fileName}}</span>
+
+    {{# } else if(d.typeId==5) { }}
+    <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-TXT"></use>
+    </svg>
+    <span>{{d.fileName}}</span>
+
+
+    {{# } else if(d.typeId==6) { }}
+    <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-WPStubiao"></use>
+    </svg>
+    <span>{{d.fileName}}</span>
+
+
+    {{# } else if(d.typeId==7) { }}
+
+    <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-word"></use>
+    </svg>
+    <span>{{d.fileName}}</span>
+
+    {{# } else if(d.typeId==8) { }}
+    <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-ppt"></use>
+    </svg>
+    <span>{{d.fileName}}</span>
+
+    {{# } else { }}
+
+    <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-TXT"></use>
+    </svg>
+    <span>{{d.fileName}}</span>
+
+    {{# } }}
+
+</script>
+
+<script type="text/html" id="new_build">
+
+    <form class="layui-form" >
+        <div class="layui-form-item">
+            <div class="layui-inline">
+
+                <label class="layui-form-label">文件名</label>
+            <div class="layui-input-inline">
+                <input type="text" name="fname" id="fname" lay-verify="title" autocomplete="off" placeholder="请输入文件名" class="layui-input">
+            </div>
+
+            </div>
+
+        </div>
+
+    </form>
+</script>
+
+
+<script  th:inline="none">
+
+    var arr = new Array();　//创建一个数组
+
+    layui.use(['table', 'element','util','upload'], function() {
+        var table = layui.table //表格
+            ,element = layui.element //元素操作
+            , util = layui.util//工具集
+            ,upload = layui.upload; //上传
+
+        //执行一个 table 实例
+        table.render({
+            elem: '#all_li'
+            ,height: 500
+            ,url: 'all_list'
+            ,title: '文件夹列表'
+            ,cols: [[ //表头
+                {type:'checkbox', fixed: 'left'}
+                ,{field:'fileName', width:320, title: '文件名', sort: true, edit: 'text',templet:"#type_icon"}
+                , {field: 'updateDate', width: 320, title: '修改日期', sort: true,
+                    templet: '<div>{{ layui.util.toDateString(d.updateDate) }}</div>'
+                }
+                ,{field:'fileSize', width:320, title: '大小'}
+                ,{fixed: 'right', width: 200, align:'center', toolbar: '#barDemo'}
+            ]]
+            ,id: 'testReload'
+            ,page: true //开启分页
+            ,done: function(res, curr, count)
+            {
+
+            }
+        });
+
+        //上传
+        upload.render({
+            elem: '#uploadDemo'
+            ,url: 'uploadFile' //上传接口
+            ,before: function()
+            {
+                interval();
+            }
+            ,done: function(res){
+                layer.msg(res.msg);
+            }
+            ,error: function () {
+                layer.alert("失败");
+            }
+        });
+
+        //栏事件
+        //监听表格复选框选择
+        table.on('checkbox(demo)', function(obj){
+            console.log(obj)
+        });
+
+        var $ = layui.$, active =
+            {         //触发事件
+                up: function()//有问题！！！！
+                {
+                    var checkStatus = table.checkStatus('testReload')
+                    , data = checkStatus.data
+                    var phuancun=-1;
+                    phuancun=arr[0];
+                    arr.shift();//移除最前一个元素并返回该元素值，数组中元素自动前移
+
+
+                    //执行重载
+                    table.reload
+                    ('testReload',
+                        {
+                            page:
+                                {
+                                    curr: 1 //重新从第 1 页开始
+                                }
+                            ,where:
+                            {
+                            parentid:phuancun
+                        }
+                        });
+                },
+                down: function()
+                {
+                    var checkStatus = table.checkStatus('testReload')
+                        , data = checkStatus.data
+
+                    console.log("下一级："+data[0].fileId);
+
+                    if(data.length==1)
+                    {
+                        arr.unshift(data[0].parentId);
+                        //执行重载
+                        table.reload
+                        ('testReload',
+                            {
+                                page:
+                                    {
+                                        curr: 1 //重新从第 1 页开始
+                                    }
+                                ,where:
+                                {
+                                    parentid:data[0].fileId
+                                }
+                            });
+                    }
+                    else
+                    {
+                        layer.msg("请选择一个文件夹进行查看");
+                    }
+                },
+                upload: function()
+                {
+                    layer.alert("上传");
+                },
+                build_file: function()
+                {
+                    layer.open
+                    (
+                        {
+                        type: 1,
+                        title: "新建",
+                        skin: 'layui-layer-rim', //加上边框
+                        area: ['320px', '180px'], //宽高
+                        //shadeClose: true, 开启遮罩关闭
+
+                        content: $('#new_build').html(),
+                            btn: ['保存'],
+                            yes: function(index, layero)
+                            {
+                                var filename = $('#fname').val();//获取表格中的值
+                                console.log("名字："+filename);
+                                $.ajax
+                                (
+                                    {
+                                        url: "all_add",
+                                        type: "post",
+                                        dataType: "json",
+                                        async: false,
+                                        data:
+                                            {
+                                            parentid:arr[0],
+                                            filename:filename
+                                        },
+                                        success: function (map)
+                                        {
+                                            var json = eval(map); //数组
+                                            //能够正常返回数据才为成功
+                                            var state = map.data;
+                                            if (state)
+                                            {
+                                                table.reload('testReload', {});
+                                                layer.msg('添加成功');
+                                            }
+                                            else
+                                            {
+                                                layer.msg('添加失败');
+                                            }
+                                        },
+                                        error: function ()
+                                        {
+                                            layer.alert("错误");
+                                        }
+                                    }
+                                );
+                            },
+
+                            cancel: function(index)
+                            {
+                                    layer.close(index)
+                            }
+                    });
+                },
+
+                del: function()
+                {
+                    var checkStatus = table.checkStatus('testReload')
+                        , data = checkStatus.data
+                    if(data.length==0)
+                    {
+                        layer.msg('请选择要删除的数据');
+                    }
+                    else if(data.length>=1)
+                    {
+                        var fileID = "";
+                        //批量获取选中行的评估模板ID
+                        for (i = 0; i < data.length; i++)
+                        {
+                            if (fileID == "")
+                            {
+                                fileID = data[i].fileId;
+                            }
+                            else
+                            {
+                                fileID = data[i].fileId+ "," + fileID;
+                            }
+                        }
+
+                        layer.confirm('确定删除选中数据吗？', function(index)
+                        {
+                            $.ajax
+                            (
+                                {
+                                    url: "all_del",
+                                    type: "post",
+                                    dataType: "json",
+                                    async: false,
+                                    data: {
+                                        fileid:fileID
+                                    },
+
+                                    success: function (map)
+                                    {
+                                        var json = eval(map); //数组
+                                        var state=map.data;
+                                        if (state)
+                                        {
+                                            table.reload('testReload', {});
+                                            layer.msg('删除成功');
+                                        }
+                                        else
+                                        {
+                                            layer.msg('删除失败');
+                                        }
+                                    },
+                                    error: function ()
+                                    {
+                                        layer.alert("错误");
+                                    }
+                                });
+                        });
+                    }
+                },
+                search: function()
+                {
+                    //layer.alert("模糊查询！！！");
+                   var filename = $('#search_Allname').val();//获取表格中的值
+                    console.log(filename);
+                    table.reload('testReload',
+                        {
+                            url: "search_allname",
+                            type: "post",
+                            dataType: "json",
+                            async: false,
+                            page:
+                                {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                            ,
+                            where:
+                                {
+                                    filename:filename
+                                }
+                        });
+                },
+
+                shuaxin: function ()
+                {
+                    table.reload('testReload', {});
+                }
+
+            };
+    /**/
+        $('.layui-row .layui-btn').on('click', function()
+        {
+        var type = $(this).data('type');
+        active[type] ? active[type].call(this) : '';
+        });
+
+        $('.layui-row .layui-icon1').on('click', function()
+        {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        //监听行工具事件
+        table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data //获得当前行数据
+                ,layEvent = obj.event; //获得 lay-event 对应的值
+
+            if(layEvent === 'detail')//查看
+            {
+
+                arr.unshift(data.parentId);
+                console.log(arr);
+                //执行重载
+                table.reload('testReload',
+                    {
+                    page:
+                        {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,where:
+                        {
+                            parentid: data.fileId
+                    }
+                });
+            }
+
+            else if(layEvent==='move')//移动到
+            {
+                //layer.alert("移动到！！");
+               // $('#treeDemo')[0].reset()
+                //$('#treeDemo').attr("disabled", false);
+
+                layer.open(
+                    {
+                      type: 1
+                    , title: '选择保存路径'
+                    , maxmin: true
+                    , area: ['450px', '500px']
+                    , shade: 0
+                        ,btn: ['保存','取消']
+                        //,content:$('#treeDemo')
+                });
+
+/**
+                var zTreeObj;
+                // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
+                var setting = {};
+                // zTree 的数据属性，深入使用请参考 API 文档（zTreeNode 节点数据详解）
+                var zNodes = [
+                    {name:"test1", open:true, children:[
+                        {name:"test1_1"}, {name:"test1_2"}]},
+                    {name:"test2", open:true, children:[
+                        {name:"test2_1"}, {name:"test2_2"}]}
+                ];
+                $(document).ready(function(){
+                    zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+                });
+ */
+
+              }
+
+            else if(layEvent === 'del')
+            {
+                layer.confirm('真的删除行么', function(index)
+                {
+                    obj.del(); //删除对应行（tr）的DOM结构
+                    layer.close(index);
+                    //向服务端发送删除指令
+                });
+            }
+        });
+
+
+        //监听单元格编辑 进行重命名
+        table.on('edit(test)', function(obj)
+        {
+            var value = obj.value //得到修改后的值
+                ,data = obj.data //得到所在行所有键值
+                ,field = obj.field; //得到字段
+            //layer.msg('[ID: '+ data.fileId +'] ' + field + ' 字段更改为：'+ value);
+            $.ajax
+            (
+                {
+                    url: "all_rename",
+                    type: "post",
+                    dataType: "json",
+                    async: false,
+                    data:
+                        {
+                            fileid:data.fileId,
+                            filename:value
+                        },
+                    success: function (map)
+                    {
+                        var json = eval(map); //数组
+                        //能够正常返回数据才为成功
+                        var state = map.data;
+                        if (state)
+                        {
+                            table.reload('testReload', {});
+                            layer.msg('修改成功');
+                        }
+                        else
+                        {
+                            layer.msg('修改失败');
+                        }
+                    },
+        });
+    });
+
+
+
+    });
+
+
+
+    /*进度条模态框位置可移动*/
+    $(function(){
+        $(".modal-dialog").draggable();
+    })
+
+    //每500ms获取一次图片上传进度
+    var intervalId;
+    function interval() {
+        $('#myModal').modal('show');
+        //轮询时间
+        intervalId=window.setInterval(showPercent,500)
+    }
+
+    function showPercent() {
+        $.ajax({
+            type:"POST",
+            url:"percent",
+            dataType:"json",
+            success:function (msg) {
+                var per="0%";
+                var per=msg.uploadPercent+"%";
+                console.log(per);
+                $("#fileName").text(msg.fileName);
+                $("#progress").css("width",per);//图片上传进度
+                $("#uploadSize").text(msg.uploadSize);
+                $("#fileSize").text(msg.fileSize);
+                $("#per").html(per);
+                if(msg.uploadPercent>=100){
+                    $('#myModal').modal('hide');
+                    stopInterval();
+                    clearPercent();
+                }
+            },
+            error:function (data) {
+                $('#myModal').modal('hide');
+                console.log(data);
+                stopInterval();
+            }
+        });
+    }
+
+    //清除进度数据
+    function clearPercent() {
+        $.ajax({
+            type:"POST",
+            contentType:false,
+            async:false,
+            url:"resetPercent",
+            success:function () {
+                $("#fileName").text(null);
+                $("#progress").css("width","0%");//图片上传进度
+                $("#uploadSize").text("0");
+                $("#fileSize").text("0");
+                $("#per").html("0%");
+            }
+        });
+    }
+
+    //清除时间
+    function stopInterval() {
+        window.clearInterval(intervalId);
+    }
+</script>
 </body>
 </html>
+
+

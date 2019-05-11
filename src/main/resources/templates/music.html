@@ -1,10 +1,274 @@
 <!DOCTYPE html>
 <html lang="en">
+<!--引入thymeleaf-->
+
+<html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <title>音乐</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../static/layui/css/layui.css">
+    <link rel="stylesheet" href="../static/layui/css/image.css">
+    <link rel="stylesheet" href="../static/layui/css/font_view/iconfont.css">
+    <link rel="stylesheet" href="../static/layui/css/ttb_icon/iconfont.css">
+    <script type="text/javascript" src="../static/layui/jquery-2.2.3.min.js"></script>
 </head>
 <body>
-音乐！！
+
+
+<!--头部工具栏-->
+
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-container">
+        <div class="layui-row">
+            <div class="layui-col-md6">
+
+                <button class="layui-btn layui-btn-primary  layui-btn-sm"  lay-event="choose_file">
+                    <i class="layui-icon"> &#xe621;</i>
+                    <span>选择文件</span>
+                </button>
+
+                <button class="layui-btn layui-btn-primary  layui-btn-sm"  lay-event="upload">
+                    <i class="layui-icon">&#xe62f;</i>
+                    <span>上传</span>
+                </button>
+                <button class="layui-btn layui-btn-primary  layui-btn-sm"  lay-event="download">
+                    <i class="layui-icon">&#xe601;</i>
+                    <span>下载</span>
+                </button>
+                <button class="layui-btn layui-btn-primary  layui-btn-sm" lay-event="share">
+                    <i class="layui-icon">&#xe641;</i>
+                    <span>分享</span>
+                </button>
+                <button class="layui-btn layui-btn-primary  layui-btn-sm" lay-event="del">
+                    <i class="layui-icon">&#xe640;</i>
+                    <span>删除</span>
+                </button>
+            </div>
+
+            <div class=" layui-col-md3">
+                <div class="layui-input-block">
+                    <input name="search_Filename" id="search_Musicname"  autocomplete="off" placeholder="文件名模糊查询" class="layui-input1">
+                </div>
+            </div>
+
+            <div class=" layui-col-md2" lay-event="search">
+                <i class="layui-icon1">&#xe615;</i>
+            </div>
+
+            <div class=" layui-col-md1">
+                <button class="layui-btn layui-btn-primary   layui-btn-xs" title="刷新" lay-event="shuaxin">
+                    <span class="layui-icon">&#xe669;</span>
+                </button>
+                <button class="layui-btn layui-btn-primary   layui-btn-xs" title="切换视图模式" lay-event="change">
+                    <span class="iconfont">&#xec6b;</span>
+
+                </button>
+            </div>
+        </div>
+    </div>
+</script>
+
+
+<!--表格-->
+<table class="layui-hide" id="music_li" lay-filter="test"></table>
+
+
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">下载</a>
+</script>
+
+
+
+<!--记住引入jq!!!!-->
+<script src="../static/layui/layui.js"></script>
+
+<script src="../static/layui/css/ttb_icon/iconfont.js"></script>
+
+
+
+<script  th:inline="none">
+    //JavaScript代码区域
+
+    layui.use(['table', 'element','util'], function(){
+        var table = layui.table //表格
+            ,element = layui.element //元素操作
+            ,  util = layui.util;//工具集
+
+
+        //执行一个 table 实例
+        table.render({
+            elem: '#music_li'
+            ,height: 540
+            ,url: 'music_list' //数据接口
+            ,title: '图片列表'
+            ,page: true //开启分页
+            ,defaultToolbar: []//toolbar默认的工具
+            ,toolbar: '#toolbarDemo' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+            ,cols: [[ //表头
+                {type:'checkbox', fixed: 'left'}
+                ,{field:'fileName', width:320, title: '文件名', sort: true ,templet: function(d){
+                    return '   <span>\n' +
+                        '                     <svg class="icon" aria-hidden="true">\n' +
+                        '                       <use xlink:href="#icon-yinle"></use>\n' +
+                        '                   </svg>\n' +
+                        '                   </span>   ' +
+                        '  <span>'+ d.fileName +'</span>'
+                }}
+                , {field: 'updateDate', width: 320, title: '修改日期', sort: true,
+                    templet: '<div>{{ layui.util.toDateString(d.updateDate) }}</div>'
+                }
+                ,{field:'fileSize', width:320, title: '大小'}
+                ,{fixed: 'right', width: 200, align:'center', toolbar: '#barDemo'}
+            ]]
+        });
+
+
+
+
+        //头工具栏事件
+        table.on('toolbar(test)', function(obj){
+            var checkStatus = table.checkStatus(obj.config.id)
+                ,data = checkStatus.data; //获取选中的数据;
+
+            switch(obj.event){
+                case 'choose_file':
+                    layer.msg('请选择文件');
+                    break;
+
+                case 'upload':
+                    layer.msg('上传');
+                    break;
+                case 'download':
+                    if(data.length==0)
+                    {
+                        layer.msg('请选择数据');
+                    }
+                    else if(data.length>=1)
+                    {
+                        layer.alert(JSON.stringify(data));
+                    }
+                    break;
+                case 'del':
+                    if(data.length==0)
+                    {
+                        layer.msg('请选择要删除的行');
+                    }
+                    else if(data.length>=1)
+                    {
+                        var temID = "";
+                        //批量获取选中行的评估模板ID
+                        for (i = 0; i < data.length; i++) {
+                            if (temID == "") {
+                                temID = data[i].fileId;
+                            }
+                            else {
+                                temID = data[i].fileId+ "," + temID;
+                            }
+                        }
+
+                        var id= checkStatus.data[0].fileId;
+                        layer.confirm('确定删除选中行吗？', function(index)
+                        {
+                            $.ajax(
+                                {
+                                    url: "music_del",
+                                    type: "post",
+                                    dataType: "json",
+                                    async: false,
+                                    data: {
+                                        fileid:temID
+                                    },
+                                    success: function (map)
+                                    {
+                                        var json = eval(map); //数组
+                                        //能够正常返回数据才为成功
+                                        //layer.alert('删除成功');
+                                        var state=map.data;
+                                        if (state)
+                                        {
+                                            layer.msg('删除成功');
+                                            table.reload('music_li', {});
+                                        }
+                                        else
+                                        {
+                                            layer.msg('删除失败');
+                                        }
+                                    },
+                                    error: function () {
+                                        layer.alert("错误");
+                                    }
+                                });
+                        });
+                    }
+                    break;
+                case'share':
+                    var data=checkStatus.data;
+                    if(data.length==0)
+                    {
+                        layer.msg('请选择数据');
+                    }
+                    else if(data.length>=1)
+                    {
+                        layer.msg('分享选中数据');
+                    }
+                    break;
+                case 'shuaxin':
+                    //layer.msg('刷新数据');
+                    table.reload('music_li', {});
+                    break;
+                case 'search':
+                    var filename = $('#search_Musicname').val();//获取表格中的值
+                    console.log(filename);
+                    table.reload('music_li',
+                        {
+                            url: "search_musicname",
+                            type: "post",
+                            dataType: "json",
+                            async: false,
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                            ,
+                            where:
+                                {
+                                    filename:filename
+                                }
+                        });
+                    break;
+
+            };
+        });
+
+
+        //监听行工具事件
+        table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data //获得当前行数据
+                ,layEvent = obj.event; //获得 lay-event 对应的值
+            if(layEvent === 'detail'){
+                layer.msg('查看操作');
+            } else if(layEvent === 'del'){
+                layer.confirm('真的删除行么', function(index)
+                {
+                    obj.del(); //删除对应行（tr）的DOM结构
+                    layer.close(index);
+                    //向服务端发送删除指令
+                });
+            } else if(layEvent === 'edit'){
+                layer.msg('编辑操作');
+            }
+        });
+    });
+
+
+</script>
 </body>
 </html>
+
+

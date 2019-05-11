@@ -4,8 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.Date;
 
 @Entity
 @Table(name="user")
@@ -22,6 +23,11 @@ public class User implements Serializable {
     private String username;
     private String password;
     private String photo;
+    private Date birthday;
+    private String sex;
+    private String blood_type;
+    private String birth_place;
+    private String live_place;
 
 
     public Integer getUserId() {

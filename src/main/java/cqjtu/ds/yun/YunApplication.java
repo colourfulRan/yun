@@ -6,11 +6,14 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.multipart.MultipartResolver;
 
 import javax.servlet.MultipartConfigElement;
 
+/*@EnableDubboConfiguration*/
 @SpringBootApplication
+@EnableScheduling    //开启定时器调度任务
 public class YunApplication {
 
 	public static void main(String[] args) {
