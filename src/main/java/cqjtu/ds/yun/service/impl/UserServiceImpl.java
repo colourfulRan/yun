@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * 用户服务接口实现
@@ -44,12 +45,15 @@ public class UserServiceImpl implements UserService
 
 
 
+
+
     @Override
     public Page<User> listByuserNameLike(String username, Pageable pageable) {
       username="%"+username+"%";
       Page<User> users=userRepo.findByUsernameLike(username,pageable);
       return users;
     }
+
 
     @Override
     public ExecuteResult<User> login(String username, String password)
