@@ -18,7 +18,6 @@ public class DomainFile
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)//自定义生成策略（自增策略）
-    
     private int fileId;
 
     private int parentId;

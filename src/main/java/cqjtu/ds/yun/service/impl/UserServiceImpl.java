@@ -63,12 +63,15 @@ public class UserServiceImpl implements UserService
 
 
 
+
+
     @Override
     public Page<User> listByuserNameLike(String username, Pageable pageable) {
       username="%"+username+"%";
       Page<User> users=userRepo.findByUsernameLike(username,pageable);
       return users;
     }
+
 
     @Override
     public ExecuteResult<User> login(String username, String password)
