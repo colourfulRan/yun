@@ -61,4 +61,8 @@ public class User implements Serializable {
     public void setPhoto(String photo) {
         this.photo = photo;
     }
+
+    public boolean isEmpty() {
+        return false;
+    }
 }

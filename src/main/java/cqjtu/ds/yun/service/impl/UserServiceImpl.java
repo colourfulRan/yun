@@ -23,6 +23,24 @@ public class UserServiceImpl implements UserService
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);//日志打印
 
     @Autowired
+    UserRepo UserRepo;
+
+    public User FindNameAndPsw(String username, String password) {
+        return UserRepo.findByUsernameAndPassword(username, password);
+    }
+
+    @Override
+    public void save(User user1) {
+        UserRepo.save(user1);
+}
+
+    @Override
+    public User findByName(String username) {
+        return UserRepo.findByUsername(username);
+    }
+
+
+    @Autowired
     private UserRepo userRepo;
 
     @Transactional
