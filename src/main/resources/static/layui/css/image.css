@@ -1,0 +1,206 @@
+/*
+.layui-container {
+
+    position: relative;
+    margin: 0 auto;
+    padding: 0px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+blockquote, body, button, dd, div, dl, dt, form, h1, h2, h3, h4, h5, h6, input, li, ol, p, pre, td, textarea, th, ul {
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    height: 56px;
+}
+
+.layui-icon {
+    font-family: layui-icon !important;
+    font-size: 18px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    position: absolute;
+    top: 55%;
+    margin-top: -10px;
+    left: 30px;
+}
+
+.layui-text
+{
+    position: absolute;
+    top: 56%;
+    margin-top: -10px;
+    left: 50px;
+}
+
+.layui-text1
+{
+    position: absolute;
+    top: 50%;
+    margin-top: -10px;
+    left: 40px;
+    font-size: 15px;
+}
+
+
+
+.layui-col-md2 {
+     width: 8%;
+     background-color: #e7e1da;
+ }
+.layui-col-md3
+{
+    width: 12%;
+    background-color: #e7e1da;
+}
+
+.layui-col-md20 {
+    width: 23%;
+    background-color: #e7e1da;
+}
+
+.layui-col-md21 {
+    width: 26%;
+    background-color: #e7e1da;
+}
+
+.layui-col-md22 {
+    width: 6%;
+    background-color: #e7e1da;
+}
+
+.layui-col-md23 {
+    width: 9%;
+    background-color: #e7e1da;
+}
+
+
+
+
+
+.layui-col-md6 {
+    width: 50%;
+    background-color: #fbfbfb;
+    height:40px;
+}
+
+.layui-col-md60 {
+    width: 20%;
+    background-color: #f6f6fc;
+    height:40px;
+}
+
+.layui-col-md61 {
+    width: 30%;
+    background-color: #fbfbfb;
+    height:40px;
+}
+
+
+
+
+.layui-body {
+
+    position: absolute;
+    left: 0px;
+    right: 0;
+    top: 56px;
+    bottom: 0;
+    z-index: 998;
+    width: auto;
+    height: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+
+}
+*/
+/*
+.layui-in {
+    border-radius: 18px;
+    border: 1px solid #c8cccf;
+    color: #986655;
+    outline: 0;
+    text-align: center;
+    display: block;
+    height: 36px;
+    width: 70%;
+    position: absolute;
+    top: 35%;
+    margin-top: -15px;
+}
+*/
+
+
+
+/*
+.layui-in{
+height:2.7em; //设置输入框的高度
+border-radius:10px;// 设置输入框的圆角的大小
+border:1px solid #c8cccf;//设置输入框边框的粗细和颜色
+color:#986655; //设置输入框中文字的颜色
+outline:0; //将输入框点击的时候出现的边框去掉
+text-align:center;// 设置输入框中文字的位置
+display:block;// 将输入框设置为块级元素
+}
+*/
+
+
+.layui-table-tool-temp {
+    padding-right: 0px;
+}
+.layui-container {
+    width: auto;
+}
+.layui-input-block {
+    min-height: 36px;
+    margin-left:0px;
+}
+
+.layui-input1
+{
+    border-radius: 18px;
+    border: 1px solid #c8cccf;
+    color: #986655;
+    outline: 0;
+    text-align: center;
+    display: block;
+    height: 36px;
+    width: 80%;
+    position: absolute;
+    top: 35%;
+    margin-top: -15px;
+}
+
+.layui-btn-xs {
+    height: 23px;
+    line-height: 22px;
+    padding: 0 3px;
+    font-size: 10px;
+}
+
+.layui-col-md1 {
+    width: 8.33333333%;
+    left: 3%;
+}
+
+.layui-col-md2 {
+    width: 16.66666667%;
+    left: 12%;
+}
+
+.layui-col-md3 {
+    width: 25%;
+    left: 20%;
+}
+
+.layui-icon1 {
+    font-family: layui-icon !important;
+    font-size: 26px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+

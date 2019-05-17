@@ -1,0 +1,116 @@
+.layui-side
+{
+    top: 0px;
+    height:800px;
+    width: 200px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+.layui-body {
+    position: absolute;
+    left: 200px;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 998;
+    width: auto;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.layui-gr
+{
+    background-color: #EAE0E0;;
+}
+
+
+.layui-nav {
+    position: relative;
+    background-color:#EAE0E0;
+    border-radius: 2px;
+    font-size: 0;
+    box-sizing: border-box;
+    top:10px ;
+}
+
+.layui-nav * {
+    font-size: 16px;
+    color: black;
+}
+
+
+.layui-nav .layui-nav-more {
+    content: '';
+    width: 0;
+    height: 0;
+    border-style: solid dashed dashed;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all .2s;
+    -webkit-transition: all .2s;
+    position: absolute;
+    top: 50%;
+    right: 3px;
+    margin-top: -3px;
+    border-width: 6px;
+    border-top-color: black;
+}
+.layui-nav.layui-nav-mored, .layui-nav-itemed > a .layui-nav-more {
+    border-style: dashed dashed solid;
+}
+
+
+.layui-nav-tree .layui-nav-item {
+    display: block;
+    width: 100%;
+    line-height: 60px;
+    text-align: center ;
+    text-align:left;
+}
+
+
+
+.layui-nav-tree .layui-nav-child a {
+    height: 40px;
+    line-height: 40px;
+    color: #fff;
+    color: black;
+}
+
+
+layui-nav-itemed > .layui-nav-child {
+    display: block;
+    padding: 0;
+    background-color:#EAE0E0;
+}
+
+.layui-nav-tree .layui-nav-child, .layui-nav-tree .layui-nav-child a:hover {
+    background: #e9f7fb !important;
+}
+.layui-nav-itemed > .layui-nav-child {
+    display: block;
+    padding: 0;
+    background-color:#EAE0E0 !important;
+}
+.layui-nav-tree .layui-nav-child, .layui-nav-tree .layui-nav-child a:hover {
+    background: 0 0;
+    color: #2ca9f9;
+}
+
+
+.layui-nav-child dd {
+    position: relative;
+    text-align: center;
+}
+
+
+
+
+.layui-nav-tree .layui-nav-item a {
+    position: relative;
+    height: 46px;
+    line-height: 46px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}

@@ -1,6 +1,8 @@
 package cqjtu.ds.yun.web;
 
 import com.aliyun.oss.model.OSSObject;
+import cqjtu.ds.yun.service.LoadFileService;
+import cqjtu.ds.yun.utils.AESUtils;
 import cqjtu.ds.yun.utils.AliyunOSSUtil;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,29 +16,30 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class DownloadController {
     private final org.slf4j.Logger logger= LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private AliyunOSSUtil aliyunOSSUtil;
+    private LoadFileService fileService;
 
     /**以附件形式流式下载**/
     @ResponseBody
-    @RequestMapping(value = "/downloadFile",method = RequestMethod.GET)
-    public void downloadFile(HttpServletRequest request, HttpServletResponse response){
+    @RequestMapping(value = "/downloadFile")
+    public Map<String,Object> downloadFile(String fileId,HttpServletRequest request, HttpServletResponse response){
+        Map<String ,Object> map=new HashMap<>();
+        System.out.println(fileId);
+        int file_id=Integer.parseInt(fileId);
         try{
-            //String key=request.getParameter("key");
-            String key="time1128";
-            //String filename=request.getParameter("filename");
-           // int i=filename.lastIndexOf("\\");
-           // filename=filename.substring(i+1);
-            String filename="测试.doc";
-            OSSObject ossObject=aliyunOSSUtil.downloadFile(key);
+            File deFile=fileService.downloadFile(file_id);
+            InputStream inputStream=new FileInputStream(deFile);
+            String filename=deFile.getName();
             //以缓冲的方式从字符输入流中读取文本，缓冲各个字符，从而提供字符、数组和行的高效读取
-            BufferedReader reader=new BufferedReader(new InputStreamReader(ossObject.getObjectContent()));
-            InputStream inputStream=ossObject.getObjectContent();
+            BufferedReader reader=new BufferedReader(new InputStreamReader(inputStream));
+
             //缓冲文件输出流
             BufferedOutputStream outputStream=new BufferedOutputStream(response.getOutputStream());
             //通知浏览器以附件形式下载
@@ -53,8 +56,9 @@ public class DownloadController {
             }
             //设置让浏览器弹出下载提示框，而不是直接在浏览器中打开
             response.addHeader("Content-Disposition","attachment;filename="+filename);
-            byte[] car=new byte[1024];
+            System.out.println(filename);
             int L;
+            byte[] car=new byte[1024];
             while ((L=inputStream.read(car))!=-1){
                 if(car.length!=0){
                     outputStream.write(car,0,L);
@@ -67,16 +71,21 @@ public class DownloadController {
             if(inputStream!=null){
                 inputStream.close();
             }
+            map.put("code",0);
+            map.put("msg","上传成功！");
+            map.put("data","");
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return map;
     }
 
     /**断点续传下载**/
     @ResponseBody
     @RequestMapping(value = "/download",method = RequestMethod.GET)
     public void download(){
-        aliyunOSSUtil.downloadFile("time1128","测试.doc");
+  //      aliyunOSSUtil.downloadFile("time1128","测试.doc");
     }
 }
