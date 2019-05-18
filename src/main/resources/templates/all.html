@@ -12,45 +12,50 @@
     <link rel="stylesheet" href="../static/layui/css/layui.css">
     <link rel="stylesheet" href="../static/layui/css/image.css">
     <link rel="stylesheet" href="../static/layui/css/font_view/iconfont.css">
-    <link rel="stylesheet" href="../static/layui/css/tb_icon/iconfont.css">
+    <link rel="stylesheet" href="../static/layui/css/tb1_icon/iconfont.css">
     <link rel="stylesheet" href="../static/layui/css/all.css">
-    <link rel="stylesheet" href="../static/layui/css/zTree/demo.css">
-    <link rel="stylesheet" href="../static/layui/css/zTree/zTreeStyle.css">
     <script type="text/javascript" src="../static/layui/jquery-2.2.3.min.js"></script>
     <script src="../static/layui/layui.js"></script>
-    <script src="../static/layui/css/tb_icon/iconfont.js"></script>
-    <script src="../static/layui/zTree/jquery.ztree.core.js"></script>
+    <script src="../static/layui/css/tb1_icon/iconfont.js"></script>
 
 </head>
 <body>
 
-
+<script type="text/html" id="toolbarDemo">
     <div class="layui-container">
         <div class="layui-row">
             <div class="layui-col-md6">
-                <button class="layui-btn layui-btn-primary  layui-btn-sm"  style="padding: 5px;padding-top: inherit;" title="上一级" data-type="up">
+                <button class="layui-btn layui-btn-primary  layui-btn-sm"  style="padding: 5px;padding-top: inherit;" title="上一级"lay-event="up">
                     <i class="layui-icon">&#xe603;</i>
                 </button>
 
-                <button class="layui-btn layui-btn-primary  layui-btn-sm"  style="margin-left: 2px;padding: 5px;padding-top: inherit;" title="下一级" data-type="down">
+                <button class="layui-btn layui-btn-primary  layui-btn-sm"  style="margin-left: 2px;padding: 5px;padding-top: inherit;" title="下一级" lay-event="down">
                     <i class="layui-icon">&#xe602;</i>
                 </button>
-                <button class="layui-btn layui-btn-primary  layui-btn-sm"  data-type="upload">
-                    <i class="layui-icon">&#xe62f;</i>
-                    <span>上传</span>
-                </button>
-                <button class="layui-btn layui-btn-primary  layui-btn-sm"  data-type="build_file">
+                <button class="layui-btn layui-btn-primary  layui-btn-sm"  lay-event="build_file">
                     <svg class="icon" aria-hidden="true">
                         <use xlink:href="#icon-wangpanxinjianwenjianjia-copy"></use>
                     </svg>
                     <span>新建文件夹</span>
                 </button>
 
-                <button class="layui-btn layui-btn-primary  layui-btn-sm" data-type="del">
+                <button class="layui-btn layui-btn-primary  layui-btn-sm" lay-event="del">
                     <i class="layui-icon">&#xe640;</i>
                     <span>删除</span>
                 </button>
-            </div>
+
+            <button class="layui-btn layui-btn-primary  layui-btn-sm" lay-event="moveto">
+                <svg class="icon" aria-hidden="true">
+                    <use xlink:href="#icon-ic_movetofolder"></use>
+                </svg>
+                <span>移动到</span>
+            </button>
+
+                <button class="layui-btn layui-btn-primary   layui-btn-sm" title="刷新" lay-event="shuaxin">
+                    <span class="layui-icon">&#xe669;</span>
+                </button>
+
+        </div>
 
             <div class=" layui-col-md3">
                 <div class="layui-input-block">
@@ -59,35 +64,39 @@
             </div>
 
             <div class=" layui-col-md2" >
-                <i class="layui-icon1" data-type="search">&#xe615;</i>
+                <i class="layui-icon1" lay-event="search">&#xe615;</i>
             </div>
 
             <div class=" layui-col-md1">
-                <button class="layui-btn layui-btn-primary   layui-btn-xs" title="刷新" data-type="shuaxin">
-                    <span class="layui-icon">&#xe669;</span>
-                </button>
-                <button class="layui-btn layui-btn-primary   layui-btn-xs" title="切换视图模式" data-type="change">
-                    <span class="iconfont">&#xec6b;</span>
+
+                <button class="layui-btn layui-btn-primary  layui-btn-sm"  lay-event="upload">
+                    <i class="layui-icon">&#xe62f;</i>
+                    <span>上传</span>
                 </button>
             </div>
         </div>
     </div>
+</script>
 
+<input type="hidden"  id="openid"
+       th:value="${pa}"
+/>
+
+<input type="hidden" id="fopenid"
+       th:value="${fi}"
+/>
 
 <!--表格-->
 <table class="layui-hide" id="all_li" lay-filter="test"></table>
 
-
-
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
-    <a class="layui-btn layui-btn-xs" lay-event="move">移动到</a>
-    <a class="layui-btn  layui-btn-primary layui-btn-xs" lay-event="download">下载</a>
+    <a class="layui-btn layui-btn-xs" lay-event="download">下载</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
 </script>
 
 
 <script type="text/html" id="type_icon">
-
     {{# if (d.typeId==0){ }}
     <svg class="icon" aria-hidden="true">
         <use xlink:href="#icon-tubiaozhizuomoban"></use>
@@ -100,9 +109,10 @@
     </svg>
     <span>{{d.fileName}}</span>
 
+
     {{# } else if(d.typeId==3) { }}
     <svg class="icon" aria-hidden="true">
-        <use xlink:href="#icon-shipin"></use>
+        <use xlink:href="#icon-tubiaozhizuomoban-"></use>
     </svg>
     <span>{{d.fileName}}</span>
 
@@ -123,7 +133,7 @@
 
     {{# } else if(d.typeId==6) { }}
     <svg class="icon" aria-hidden="true">
-        <use xlink:href="#icon-WPStubiao"></use>
+        <use xlink:href="#icon-pdf"></use>
     </svg>
     <span>{{d.fileName}}</span>
 
@@ -141,15 +151,20 @@
     </svg>
     <span>{{d.fileName}}</span>
 
+    {{# } else if(d.typeId==10) { }}
+    <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-file_excel"></use>
+    </svg>
+    <span>{{d.fileName}}</span>
+
     {{# } else { }}
 
     <svg class="icon" aria-hidden="true">
-        <use xlink:href="#icon-TXT"></use>
+        <use xlink:href="#icon-qitabaobiao"></use>
     </svg>
     <span>{{d.fileName}}</span>
 
     {{# } }}
-
 </script>
 
 <script type="text/html" id="new_build">
@@ -157,28 +172,95 @@
     <form class="layui-form" >
         <div class="layui-form-item">
             <div class="layui-inline">
-
                 <label class="layui-form-label">文件名</label>
             <div class="layui-input-inline">
-                <input type="text" name="fname" id="fname" lay-verify="title" autocomplete="off" placeholder="请输入文件名" class="layui-input">
+                <input type="text" id="fname" oninput="OnInput (event)" lay-verify="title" autocomplete="off" placeholder="请输入文件名" class="layui-input">
             </div>
-
             </div>
-
         </div>
-
     </form>
 </script>
 
 
+<script type="text/html" id="fsize">
 
-<!--记住引入jq!!!!-->
+    {{# if (d.fileSize<1024){ }}
+
+    <div>
+        <span>{{d.fileSize}}</span>
+        KB
+    </div>
+    {{# }else if (d.fileSize>=1024&&d.fileSize<1024*1024){ }}
+
+    <div>
+        <span>{{(d.fileSize/1024).toFixed(2)}}</span>
+        MB
+    </div>
+    {{# } else if(d.fileSize>=1024*1024&&d.fileSize<1024*1024*1024) { }}
+    <div>
+        <span>{{(d.fileSize/1024/1024).toFixed(2)}}</span>
+        GB
+    </div>
+    {{# } else { }}
+    {{# } }}
+</script>
+
 
 
 
 <script  th:inline="none">
 
-    var arr = new Array();　//创建一个数组
+
+    //检验非法字符
+    $(function(){
+
+        $('#fname').bind('input propertychange', function() {
+            $('#result').html($(this).val().length + ' characters');
+        });
+
+    })
+
+    // Firefox, Google Chrome, Opera, Safari, Internet Explorer from version 9
+    function OnInput (event) {
+        if(isRight(event.target.value))
+        {
+            layer.alert("文件名不能包含 /:*?\"<>| 这些非法字符");
+        }
+    }
+
+    //命名是否符合规则
+    function isRight(str)
+    {
+        var reg = new RegExp('[\\\\/:*?\"<>|]');
+        return reg.test(str);     /*进行验证*/
+    }
+    
+
+
+    var arr = new Array();　//创建一个数组,存parentid
+    var arr1=new Array();//存fileid;
+
+
+    var parent=-1;
+  var pa=document.getElementById("openid").value;
+   if(pa!="")
+    {
+        var p=parseInt(pa);
+        parent=p;
+
+    }
+    $(" #openid").val("");
+
+
+    var fid=-1;
+    var fi=document.getElementById("fopenid").value;
+    if(fi!="")
+    {
+        var f=parseInt(fi);
+        fid=f;
+    }
+    $(" #fopenid").val("");
+
 
     layui.use(['table', 'element','util'], function()
     {
@@ -191,161 +273,207 @@
         (
             {
             elem: '#all_li'
-            ,height: 500
-            ,url: 'all_list'
+            ,height: 540
+            ,url: 'all_list?parentid='+parent
             ,title: '文件夹列表'
+                ,defaultToolbar: []//toolbar默认的工具
+                ,toolbar: '#toolbarDemo' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
             ,cols: [[ //表头
                 {type:'checkbox', fixed: 'left'}
                 ,{field:'fileName', width:320, title: '文件名', sort: true, edit: 'text',templet:"#type_icon"}
                 , {field: 'updateDate', width: 320, title: '修改日期', sort: true,
                     templet: '<div>{{ layui.util.toDateString(d.updateDate) }}</div>'
                 }
-                ,{field:'fileSize', width:320, title: '大小'}
+                ,{field:'fileSize', width:320, title: '大小',templet:"#fsize"}
                 ,{fixed: 'right', width: 200, align:'center', toolbar: '#barDemo'}
             ]]
             ,id: 'testReload'
             ,page: true //开启分页
-            ,done: function(res, curr, count)
+        });
+
+
+
+
+        //监听头部工具栏
+        table.on('toolbar(test)', function(obj){
+            var checkStatus = table.checkStatus(obj.config.id)
+                ,data = checkStatus.data; //获取选中的数据;
+            switch(obj.event)
             {
-                /**  $('#image_li').next().find('.layui-table-body').find("table" ).find("tbody").children("tr").on('dblclick',function(){
-               var id = JSON.stringify($('#image_li').next().find('.layui-table-body').find("table").find("tbody").find(".layui-table-hover").data('index'));
-               var obj = res.data[id];
-               console.log(obj.filePath);
-               //fun.openLayer(obj);
-               layer.msg('双击文件！！');
-           })*/
-
-
-            }
-        });
-
-        //栏事件
-        //监听表格复选框选择
-        table.on('checkbox(demo)', function(obj){
-            console.log(obj)
-        });
-
-        var $ = layui.$, active =
-            {         //触发事件
-                up: function()//有问题！！！！
-                {
-                    var checkStatus = table.checkStatus('testReload')
-                    , data = checkStatus.data
-                    var phuancun=-1;
+                //上一级
+                case 'up':
+                    var phuancun;
                     phuancun=arr[0];
+                    if(phuancun==undefined)
+                    {
+                        phuancun=fid;
+                    }
+                    else
+                 {
                     arr.shift();//移除最前一个元素并返回该元素值，数组中元素自动前移
-
-
+                    arr1.shift();
+                 }
+                    console.log("phuancun2:"+phuancun);
+                    console.log(arr);
                     //执行重载
                     table.reload
-                    ('testReload',
+                    (
+                        'testReload',
                         {
+                            url: "all_list",
+                            type: "post",
+                            dataType: "json",
+                            async: false,
                             page:
                                 {
                                     curr: 1 //重新从第 1 页开始
                                 }
                             ,where:
                             {
-                            parentid:phuancun
+                                parentid:phuancun
+                            }
                         }
-                        });
-                },
-                down: function()
-                {
-                    var checkStatus = table.checkStatus('testReload')
-                        , data = checkStatus.data
-
-                    console.log("下一级："+data[0].fileId);
-
-                    if(data.length==1)
+                        );
+                    break;
+                    //下一级
+                case 'down':
+                   // console.log("下一级："+data[0].fileId);
+                    if(data.length==0||data.length>1)
                     {
-                        arr.unshift(data[0].parentId);
-                        //执行重载
-                        table.reload
-                        ('testReload',
+                        layer.msg('请选中一个文件');
+                    }
+                    else if(data.length==1)
+                    {
+                        arr.unshift(data[0].parentId);//进数组,前插
+                        arr1.unshift(data[0].fileId);//
+                        console.log(arr);
+                        $.ajax
+                        (
                             {
-                                page:
+                                url: "all_judge",
+                                type: "post",
+                                dataType: "json",
+                                async: false,
+                                data:
                                     {
-                                        curr: 1 //重新从第 1 页开始
-                                    }
-                                ,where:
+                                        fileid:data[0].fileId
+                                    },
+                                success: function (map)
                                 {
-                                    parentid:data[0].fileId
+                                    var json = eval(map); //数组
+                                    //能够正常返回数据才为成功
+                                    var state = map.data;
+                                    if (state)
+                                    {
+                                        //执行重载
+
+                                        //执行重载
+                                        table.reload
+                                        ('testReload',
+                                            {
+                                                url: "all_list",
+                                                type: "post",
+                                                dataType: "json",
+                                                async: false,
+                                                page:
+                                                    {
+                                                        curr: 1 //重新从第 1 页开始
+                                                    }
+                                                ,where:
+                                                {
+                                                    parentid:data[0].fileId
+                                                }
+                                            });
+
+
+
+                                    }
+                                    else
+                                    {
+                                        //layer.msg('添加失败');
+                                        /**/
+                                        var ti=map.title;
+                                        var imgHtml = "<img src='" + map.src + "'width='400px' height='400px'/>";
+                                        layer.open(
+                                            {
+                                                type: 1,
+                                                title: ti,
+                                                skin: 'layui-layer-rim', //加上边框
+                                                scrollbar: false,
+                                                area: [500,500], //宽高
+                                                content: imgHtml
+                                            });
+                                    }
+                                },
+                                error: function ()
+                                {
+                                    layer.alert("错误");
+                                }
+                            }
+                        );
+
+                    }
+                    break;
+                    case 'build_file':
+                        layer.open
+                        (
+                            {
+                                type: 1,
+                                title: "新建",
+                                skin: 'layui-layer-rim', //加上边框
+                                area: ['320px', '180px'], //宽高
+                                //shadeClose: true, 开启遮罩关闭
+                                scrollbar: false,
+                                content: $('#new_build').html(),
+                                btn: ['保存'],
+                                yes: function(index, layero)
+                                {
+                                    var filename = $('#fname').val();//获取表格中的值
+                                    console.log("名字："+filename);
+                                    $.ajax
+                                    (
+                                        {
+                                            url: "all_add",
+                                            type: "post",
+                                            dataType: "json",
+                                            async: false,
+                                            data:
+                                                {
+                                                    parentid:arr1[0],
+                                                    filename:filename
+                                                },
+                                            success: function (map)
+                                            {
+                                                var json = eval(map); //数组
+                                                //能够正常返回数据才为成功
+                                                var state = map.data;
+                                                if (state)
+                                                {
+                                                    table.reload('testReload', {});
+                                                    layer.msg(map.message);
+                                                }
+                                                else
+                                                {
+                                                    layer.msg('新建失败');
+                                                }
+                                            },
+                                            error: function ()
+                                            {
+                                                layer.alert("错误");
+                                            }
+                                        }
+                                    );
+                                },
+
+                                cancel: function(index)
+                                {
+                                    layer.close(index)
                                 }
                             });
-                    }
-                    else
-                    {
-                        layer.msg("请选择一个文件夹进行查看");
-                    }
-                },
-                upload: function()
-                {
-                    layer.alert("上传");
-                },
-                build_file: function()
-                {
-                    layer.open
-                    (
-                        {
-                        type: 1,
-                        title: "新建",
-                        skin: 'layui-layer-rim', //加上边框
-                        area: ['320px', '180px'], //宽高
-                        //shadeClose: true, 开启遮罩关闭
+                    break;
 
-                        content: $('#new_build').html(),
-                            btn: ['保存'],
-                            yes: function(index, layero)
-                            {
-                                var filename = $('#fname').val();//获取表格中的值
-                                console.log("名字："+filename);
-                                $.ajax
-                                (
-                                    {
-                                        url: "all_add",
-                                        type: "post",
-                                        dataType: "json",
-                                        async: false,
-                                        data:
-                                            {
-                                            parentid:arr[0],
-                                            filename:filename
-                                        },
-                                        success: function (map)
-                                        {
-                                            var json = eval(map); //数组
-                                            //能够正常返回数据才为成功
-                                            var state = map.data;
-                                            if (state)
-                                            {
-                                                table.reload('testReload', {});
-                                                layer.msg('添加成功');
-                                            }
-                                            else
-                                            {
-                                                layer.msg('添加失败');
-                                            }
-                                        },
-                                        error: function ()
-                                        {
-                                            layer.alert("错误");
-                                        }
-                                    }
-                                );
-                            },
 
-                            cancel: function(index)
-                            {
-                                    layer.close(index)
-                            }
-                    });
-                },
-
-                del: function()
-                {
-                    var checkStatus = table.checkStatus('testReload')
-                        , data = checkStatus.data
+                case 'del':
                     if(data.length==0)
                     {
                         layer.msg('请选择要删除的数据');
@@ -366,7 +494,7 @@
                             }
                         }
 
-                        layer.confirm('确定删除选中数据吗？', function(index)
+                        layer.confirm('确定删除所选中行吗？</br>十天内可在回收站找回', function(index)
                         {
                             $.ajax
                             (
@@ -400,13 +528,19 @@
                                 });
                         });
                     }
-                },
-                search: function()
-                {
-                    //layer.alert("模糊查询！！！");
-                   var filename = $('#search_Allname').val();//获取表格中的值
-                    console.log(filename);
-                    table.reload('testReload',
+                    break;
+
+                case 'shuaxin':
+                    table.reload('testReload', {});
+                    break;
+
+                case 'search':
+                    var filename = $('#search_Allname').val();//获取表格中的值
+                    arr.length=0;
+                    arr1.length=0;
+                    console.log(arr);
+                    table.reload
+                    ('testReload',
                         {
                             url: "search_allname",
                             type: "post",
@@ -414,103 +548,191 @@
                             async: false,
                             page:
                                 {
-                                curr: 1 //重新从第 1 页开始
-                            }
+                                    curr: 1 //重新从第 1 页开始
+                                }
                             ,
                             where:
                                 {
                                     filename:filename
                                 }
                         });
-                },
 
-                shuaxin: function ()
-                {
-                    table.reload('testReload', {});
-                }
+                    document.getElementById("search_Allname").value=filename;
 
+                    break;
+
+                case 'moveto':
+                    //移动到
+                    // layer.msg("移动到");
+
+                    if (data.length == 0) {
+                        layer.msg('请选择要移动的行');
+                    }
+                    else if (data.length >= 1) {
+                        var temID = "";
+                        //批量获取选中行的评估模板ID
+                        for (i = 0; i < data.length; i++) {
+                            if (temID == "") {
+                                temID = data[i].fileId;
+                            }
+                            else {
+                                temID = data[i].fileId + "," + temID;
+                            }
+                        }
+                        layer.open
+                        (
+                            {
+                                type: 2
+                                , title: '选择保存路径'
+                                , maxmin: true
+                                , area: ['350px', '380px']
+                                , shade: 0
+                                , btn: ['确定', '取消']
+                                , content: 'ztree'
+                                //分别为当前层索引、当前层DOM对象
+                                , yes: function (index, layero) {
+                                // 获得子页面
+                                var formWin = $(layero).find("iframe")[0].contentWindow;
+                                // 向子页面的全局函数child传参
+                                formWin.child(temID);
+                                formWin.doSetSelectedNode();
+                                table.reload('testReload', {});
+                                layer.msg("移动成功");
+                                layer.close(index);
+                            },
+                                btn2: function (index) {
+                                    table.reload('testReload', {});
+                                    layer.close(index);
+                                }
+                                ,
+                                cancel: function (index) {
+                                    table.reload('testReload', {});
+                                    layer.close(index);
+                                }
+                            });
+                    }
+                    break;
             };
-    /**/
-        $('.layui-row .layui-btn').on('click', function()
-        {
-        var type = $(this).data('type');
-        active[type] ? active[type].call(this) : '';
         });
 
-        $('.layui-row .layui-icon1').on('click', function()
-        {
-            var type = $(this).data('type');
-            active[type] ? active[type].call(this) : '';
-        });
+
 
         //监听行工具事件
-        table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+        table.on('tool(test)', function(obj)
+        { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
             var data = obj.data //获得当前行数据
                 ,layEvent = obj.event; //获得 lay-event 对应的值
 
             if(layEvent === 'detail')//查看
             {
-
-                arr.unshift(data.parentId);
+                arr.unshift(data.parentId);//
+                arr1.unshift(data.fileId);
                 console.log(arr);
-                //执行重载
-                table.reload('testReload',
+
+                $.ajax
+                (
                     {
-                    page:
+                        url: "all_judge",
+                        type: "post",
+                        dataType: "json",
+                        async: false,
+                        data:
+                            {
+                                fileid:data.fileId
+                            },
+                        success: function (map)
                         {
-                        curr: 1 //重新从第 1 页开始
-                    }
-                    ,where:
+                            var json = eval(map); //数组
+                            //能够正常返回数据才为成功
+                            var state = map.data;
+                            if (state)
+                            {
+                                //执行重载
+                                table.reload('testReload',
+                                    {
+                                        url: "all_list",
+                                        type: "post",
+                                        dataType: "json",
+                                        async: false,
+                                        page:
+                                            {
+                                                curr: 1 //重新从第 1 页开始
+                                            }
+                                        ,where:
+                                        {
+                                            parentid: data.fileId
+                                        }
+                                    });
+                            }
+                            else
+                            {
+                                //layer.msg('添加失败');
+                                /**/
+                                var ti=map.title;
+                                var imgHtml = "<img src='" + map.src + "'width='400px' height='400px'/>";
+                                layer.open(
+                                    {
+                                        type: 1,
+                                        title: ti,
+                                        skin: 'layui-layer-rim', //加上边框
+                                        scrollbar: false,
+                                        area: [500,500], //宽高
+                                        content: imgHtml
+                                    });
+                            }
+                        },
+                        error: function ()
                         {
-                            parentid: data.fileId
+                            layer.alert("错误");
+                        }
                     }
-                });
+                );
             }
 
-            else if(layEvent==='move')//移动到
+            else if(layEvent==='download')//移动到
             {
-                //layer.alert("移动到！！");
-               // $('#treeDemo')[0].reset()
-                //$('#treeDemo').attr("disabled", false);
-
-                layer.open(
-                    {
-                      type: 1
-                    , title: '选择保存路径'
-                    , maxmin: true
-                    , area: ['450px', '500px']
-                    , shade: 0
-                        ,btn: ['保存','取消']
-                        //,content:$('#treeDemo')
-                });
-
-/**
-                var zTreeObj;
-                // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
-                var setting = {};
-                // zTree 的数据属性，深入使用请参考 API 文档（zTreeNode 节点数据详解）
-                var zNodes = [
-                    {name:"test1", open:true, children:[
-                        {name:"test1_1"}, {name:"test1_2"}]},
-                    {name:"test2", open:true, children:[
-                        {name:"test2_1"}, {name:"test2_2"}]}
-                ];
-                $(document).ready(function(){
-                    zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
-                });
- */
+                layer.msg("下载");
 
               }
 
-            else if(layEvent === 'del')
+            else if(layEvent === 'delete')
             {
-                layer.confirm('真的删除行么', function(index)
-                {
-                    obj.del(); //删除对应行（tr）的DOM结构
-                    layer.close(index);
-                    //向服务端发送删除指令
-                });
-            }
+                    var fileID = data.fileId;
+                    layer.confirm('真的删除该行么</br>十天内可在回收站找回', function(index)
+                    {
+                        $.ajax
+                        (
+                            {
+                                url: "all_del",
+                                type: "post",
+                                dataType: "json",
+                                async: false,
+                                data: {
+                                    fileid:fileID
+                                },
+                                success: function (map)
+                                {
+                                    var json = eval(map); //数组
+                                    var state=map.data;
+                                    if (state)
+                                    {
+                                        //table.reload('testReload', {});
+                                        layer.msg('删除成功');
+                                        obj.del(); //删除对应行（tr）的DOM结构
+                                        layer.close(index);
+                                    }
+                                    else
+                                    {
+                                        layer.msg('删除失败');
+                                    }
+                                },
+                                error: function ()
+                                {
+                                    layer.alert("错误");
+                                }
+                            });
+                    });
+                }
         });
 
 
@@ -525,7 +747,7 @@
             $.ajax
             (
                 {
-                    url: "all_rename",
+                    url: "rename",
                     type: "post",
                     dataType: "json",
                     async: false,

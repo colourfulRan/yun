@@ -21,6 +21,11 @@ public class User {
     private String password;
     private String photo;
 
+
+
+
+
+
     public Integer getUserId() {
         return userId;
     }

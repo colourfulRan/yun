@@ -17,7 +17,7 @@ import java.util.Date;
 public class DomainFile
 {
     @Id
-    private int fileId;
+    private int fileId;//数据库中fileidw唯一！！！！
 
     private int parentId;
 
@@ -33,20 +33,19 @@ public class DomainFile
 
     //上传日期
     private Timestamp  updateDate;
-            //updateDate;
+
     private int fileSize;
 
     private String secretKey;
 
-    private  boolean isDel;
+    //
+    private  int isDel;
 
     private Timestamp delDate;
 
     private int fileValid;
 
     private Timestamp recentDate;
-
-
 
 
     public int getFileId()
@@ -149,12 +148,12 @@ public class DomainFile
         this.secretKey = secretKey;
     }
 
-    public boolean isDel() {
+    public int getIsDel() {
         return isDel;
     }
 
-    public void setDel(boolean del) {
-        isDel = del;
+    public void setIsDel(int isDel) {
+        this.isDel = isDel;
     }
 
     public Timestamp getDelDate() {

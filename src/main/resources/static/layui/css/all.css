@@ -9,3 +9,16 @@
     margin-top: 20px;
     margin-left: -25px;
 }
+
+
+.layui-body {
+    position: absolute;
+    left: 200px;
+    right: 0;
+    top: -9.5px;
+    bottom: 0;
+    z-index: 998;
+    width: auto;
+    overflow: hidden;
+    box-sizing: border-box;
+}

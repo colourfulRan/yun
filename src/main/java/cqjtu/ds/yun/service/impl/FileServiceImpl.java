@@ -27,7 +27,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public DomainFile findbyid(Integer fileid) {
-        return fileRepo.findByFileId(fileid);
+        return fileRepo.findByFileId( fileid);
     }
 
     //update、delete操作需要使用事务
@@ -39,15 +39,10 @@ public class FileServiceImpl implements FileService {
 
     @Transactional
     @Override
-    public void RemoveAll(Boolean isDel) {
-        fileRepo.deleteAllByIsDel(isDel);
+    public void RemoveAllRecy(Integer userid) {
+        fileRepo.deleteAllRecy(userid);
     }
 
-    @Transactional
-    @Override
-    public DomainFile UpdateFile(DomainFile file) {
-        return fileRepo.save(file);
-    }
 
     @Transactional
     @Override
@@ -56,39 +51,40 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Integer FCount(Integer userid, Integer typeid, Boolean isdel) {
+    public List<DomainFile> findData()
+    {
+      return fileRepo.findData();
+    }
+
+    @Override
+    public Integer FCount(Integer userid, Integer typeid, Integer isdel) {
         return fileRepo.countAllByUserIdAndTypeIdAndIsDel(userid, typeid, isdel);
     }
 
     @Override
-    public Integer Fname_Count(Integer userid, Integer typeid, Boolean isdel, String filename) {
+    public Integer Fname_Count(Integer userid, Integer typeid, Integer isdel, String filename) {
         return fileRepo.countAllByUserIdAndTypeIdAndIsDelAndFileNameLike(userid, typeid, isdel, filename);
     }
 
     @Override
-    public Page<DomainFile> findAllFiles(Integer userid, Integer typeid, Boolean isdel, Pageable pageable) {
+    public Page<DomainFile> findAllFiles(Integer userid, Integer typeid, Integer isdel, Pageable pageable) {
 
         return fileRepo.findAllByUserIdAndTypeIdAndIsDel(userid, typeid, isdel, pageable);
     }
 
     @Override
-    public Page<DomainFile> findAllbyFname(Integer userid, Integer typeid, Boolean isdel, String filename, Pageable pageable) {
+    public Page<DomainFile> findAllbyFname(Integer userid, Integer typeid, Integer isdel, String filename, Pageable pageable) {
         return fileRepo.findAllByUserIdAndTypeIdAndIsDelAndFileNameLike(userid, typeid, isdel, filename, pageable);
     }
 
     @Override
-    public Integer RecycleCount(Integer userid, Boolean isdel) {
+    public Integer RecycleCount(Integer userid, Integer isdel) {
         return fileRepo.countAllByUserIdAndIsDel(userid, isdel);
     }
 
     @Override
-    public Page<DomainFile> findAllRecycle(Integer userid, Boolean isdel, Pageable pageable) {
+    public Page<DomainFile> findAllRecycle(Integer userid, Integer isdel, Pageable pageable) {
         return fileRepo.findAllByUserIdAndIsDel(userid, isdel, pageable);
-    }
-
-    @Override
-    public List<DomainFile> findAllbyisdel(Boolean isdel) {
-        return fileRepo.findAllByIsDel(isdel);
     }
 
     @Override
@@ -97,7 +93,8 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public List<DomainFile> findAllSec(Integer userid, Integer start, Integer size) {
+    public List<DomainFile> findAllSec(Integer userid, Integer start, Integer size)
+    {
         return fileRepo.findAllFile(userid, start, size);
     }
 
@@ -113,17 +110,6 @@ public class FileServiceImpl implements FileService {
 
 
     @Override
-    public List<DomainFile> findAll(Integer userid)
-    {
-        return fileRepo.findAllByUserId(userid);
-    }
-
-    @Override
-    public Integer CountAll(Integer userid) {
-        return fileRepo.countAllByUserId(userid);
-    }
-
-    @Override
     public List<DomainFile> findallRec(Integer userid,Integer start, Integer size)
     {
         return fileRepo.findAllRecent(userid,start,size);
@@ -136,23 +122,19 @@ public class FileServiceImpl implements FileService {
 
 
     @Override
-    public Page<DomainFile> findAll_all(Integer userid, Integer parentid, Pageable pageable) {
-        return fileRepo.findAllByUserIdAndParentId(userid, parentid, pageable);
+    public Page<DomainFile> findAll_all(Integer userid, Integer parentid,Integer isDel, Pageable pageable) {
+        return fileRepo.findAllByUserIdAndParentIdAndIsDel(userid, parentid, isDel, pageable);
     }
 
     @Override
-    public Integer countAll_all(Integer userid, Integer parentid) {
-        return fileRepo.countAllByUserIdAndParentId(userid, parentid);
+    public Integer countAll_all(Integer userid, Integer parentid,Integer isDel) {
+        return fileRepo.countAllByUserIdAndParentIdAndIsDel(userid, parentid, isDel);
     }
-
-
-
-
 
     @Override
     public List<DomainFile> findAll_abyP(Integer parentid)
     {
-        return fileRepo.findAllByParentId(parentid);
+        return fileRepo.findAllByP(parentid);
     }
 
    @Override
@@ -161,58 +143,34 @@ public class FileServiceImpl implements FileService {
         return fileRepo.countAllByParentId(parentid);
     }
 
-
-    @Override
-    public Page<DomainFile> findAll_namelike(Integer userid, String filename, Pageable pageable) {
-        return fileRepo.findAllByUserIdAndFileNameLike(userid, filename, pageable);
+   @Override
+    public Page<DomainFile> findAll_abyP1(Integer parentid,Pageable pageable) {
+        return fileRepo.findAllByParentId(parentid,pageable);
     }
 
     @Override
-    public Integer countAll_namelike(Integer userid, String filename) {
-       return fileRepo.countAllByUserIdAndFileNameLike(userid, filename);
+    public Page<DomainFile> findAll_namelike(Integer userid,Integer isdel, String filename, Pageable pageable) {
+        return fileRepo.findAllByUserIdAndIsDelAndFileNameLike(userid, isdel, filename, pageable);
     }
+
+    @Override
+    public Integer countAll_namelike(Integer userid, Integer isdel,String filename) {
+       return fileRepo.countAllByUserIdAndIsDelAndFileNameLike(userid, isdel, filename);
+    }
+
+   @Override
+    public List<DomainFile> findAlluserbyt(Integer userid, Integer typeid) {
+        return fileRepo.findAllByUserIdAndTypeId(userid, typeid);
+    }
+
+
+    @Override
+    public DomainFile findbyname(Integer userid, String filename,Integer parentid) {
+        return fileRepo.findByUserIdAndFileNameAndParentId(userid, filename, parentid);
+    }
+
+
 }
 
 
 
-    /* @Override
-    public ExecuteResult<List<File>> findAllFiles(Integer userid,Integer typeid)
-    {
-
-        ExecuteResult<List<File>> filesExecuteResult = new ExecuteResult<>();
-        try {
-            List<File> listAll = fileRepo.findAllByUseridAndTypeid(userid, typeid);
-            logger.info("listAll:{}",listAll);
-
-            List<File> filesList = new ArrayList<>();
-           filesExecuteResult.setExecuted(true);
-            if (listAll != null)
-            {
-
-                for (File file: listAll) {
-                    logger.info("file:{}",file);
-
-                    filesList.add(file);
-                }
-                //
-                logger.info("files:{}",filesList);
-                filesExecuteResult.setSuccess(true);
-                filesExecuteResult.setCode("0000");
-                filesExecuteResult.setMessage("查询成功！");
-                filesExecuteResult.setData(filesList);
-            }else {
-              filesExecuteResult.setSuccess(false);
-              filesExecuteResult.setCode("1000");
-              filesExecuteResult.setMessage("暂停营业");
-            }
-
-        }catch (Exception e) {
-            filesExecuteResult.setExecuted(false);
-            filesExecuteResult.setSuccess(false);
-            filesExecuteResult.setCode("1111");
-            filesExecuteResult.setMessage("系统异常");
-            logger.warn("查询失败！",e);
-        }
-        return filesExecuteResult;
-    }
-*/

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>zTree</title>
+
+    <!--
+    <link rel="stylesheet" href="../static/layui/css/layui.css">
+    <script src="../static/layui/layui.js"></script>
+    -->
+
+    <link rel="stylesheet" href="../static/layui/zTree/demo.css">
+    <link rel="stylesheet" href="../static/layui/zTree/zTreeStyle/zTreeStyle.css">
+    <script type="text/javascript" src="../static/layui/zTree/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="../static/layui/zTree/jquery.ztree.core.js"></script>
+    <script type="text/javascript" src="../static/layui/zTree/jquery.ztree.excheck.js"></script>
+    <script type="text/javascript" src="../static/layui/zTree/jquery.ztree.exedit.js"></script>
+    <script type="text/javascript" src="../static/layui/zTree/jquery.ztree.exhide.js"></script>
+
+    <SCRIPT type="text/javascript" >
+        var zTreeObj,treeObj, fid,pid,pfid,
+            setting =
+                {
+                callback:
+                {
+                    onRename: zTreeOnRename,//修改
+                    //onRemove: zTreeOnRemove,//删除
+                    onClick: zTreeOnClick
+                },
+
+                data: {
+                    simpleData:
+                        {
+                        enable: true,
+                        idKey: "fileId",
+                        pIdKey: "parentId",
+                        rootPId: 0
+                    },
+                    key:
+                        {
+                            name:"fileName",
+                        }
+                }
+                ,
+                view:
+                    {
+                        selectedMulti: false
+                },
+
+                edit: {
+                               enable: true,
+                             showRemoveBtn: false,
+                             showRenameBtn: true,
+                             renameTitle: "修改"
+                     }
+            };
+
+        $(document).ready(function(){
+            initZTree();
+        });
+
+        function initZTree()
+        {
+            $.ajax({
+                url: "show_Tree",
+                type: "post",
+                dataType: "json",
+                success: function (map)
+                {
+                    zTreeObj=$.fn.zTree.init($("#tree"), setting, map.data);//实现加载树的方法
+                   treeObj = $.fn.zTree.getZTreeObj("tree");
+                    var nodes = treeObj.getNodesByFilter(filter); // 查找节点集合
+                    for(j=0 ; j<nodes.length; j++)
+                    {
+                        //遍历目录节点，设置isParent属性为true;
+                        nodes[j].isParent = true;
+                       // console.log(nodes[j]);
+                    }
+                    treeObj.refresh();
+                }
+            })
+        };
+
+
+        //结点集合条件
+        function  filter(node)
+        {
+            return(node!=null);
+        };
+
+        function zTreeOnClick(event, treeId, treeNode)
+        {
+            //alert(treeNode.fileId+" "+treeNode.fileName+" "+treeNode.parentId+" "+treeNode.userId);
+            fid=treeNode.fileId;
+            pid=treeNode.parentId;
+        };
+
+        function child(d)
+        {
+           pfid=d;
+        }
+
+        function doSetSelectedNode()
+        {
+            $.ajax({
+                url: "move_file",
+                type: "post",
+                dataType: "json",
+                async: false,
+                data:
+                {
+                    oldfid:pfid,
+                    newfid:fid
+                },
+                success: function (map)
+                {
+                    var json = eval(map); //数组
+                    var state=map.data;
+                    if (state)
+                    {
+                        //table.reload('testReload', {});
+                        //alert('移动成功');
+                        initZTree();
+                    }
+                    else
+                    {
+                       alert('移动失败');
+                    }
+
+                }
+            })
+        };
+
+
+       function zTreeOnRename(event,treeId, treeNode,isCancel)
+       {
+         $.ajax({
+               url: "all_rename",
+               type: "post",
+               data:
+               {
+                   fileid: treeNode.fileId,
+                   filename: treeNode.fileName
+               },
+             success: function (map)
+             {
+                 var json = eval(map); //数组
+                 var state=map.data;
+                 if (state)
+                 {
+                     //table.reload('testReload', {});
+                     alert('重命名成功！');
+                     initZTree();
+                 }
+                 else
+                 {
+                     alert('重命名失败');
+                 }
+             }
+           })
+       }
+
+
+    </SCRIPT>
+</head>
+<body>
+<div>
+    <ul id="tree" class="ztree"style="width:320px; height:240px;overflow: auto"></ul>
+</div>
+</body>
+</html>
