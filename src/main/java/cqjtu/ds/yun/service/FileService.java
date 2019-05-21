@@ -26,7 +26,7 @@ Page<DomainFile>findAllFiles(Integer userid, Integer typeid, Integer isdel, Page
     void RemoveFile(Integer fileid);
 
      // 清空回收站文件,
-    void RemoveAllRecy(Integer userid);
+     List<DomainFile> findAllRecy(Integer userid);
 
     //定时器
    List<DomainFile> findData();
@@ -71,5 +71,5 @@ Page<DomainFile>findAllFiles(Integer userid, Integer typeid, Integer isdel, Page
     List<DomainFile>findAlluserbyt(Integer userid,Integer typeid);
 
 //同级文件名称问题
-    DomainFile findbyname(Integer userid,String filename,Integer parentid);
+   DomainFile findbyname(Integer userid,String filename,Integer isdel,Integer parentid);
 }

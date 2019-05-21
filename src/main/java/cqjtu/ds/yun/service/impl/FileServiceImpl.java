@@ -37,10 +37,10 @@ public class FileServiceImpl implements FileService {
         fileRepo.deleteByFileId(fileid);
     }
 
-    @Transactional
+
     @Override
-    public void RemoveAllRecy(Integer userid) {
-        fileRepo.deleteAllRecy(userid);
+    public List<DomainFile>findAllRecy(Integer userid) {
+      return  fileRepo.findAllRecy(userid);
     }
 
 
@@ -165,8 +165,8 @@ public class FileServiceImpl implements FileService {
 
 
     @Override
-    public DomainFile findbyname(Integer userid, String filename,Integer parentid) {
-        return fileRepo.findByUserIdAndFileNameAndParentId(userid, filename, parentid);
+    public DomainFile findbyname(Integer userid, String filename,Integer isdel,Integer parentid) {
+        return fileRepo.findByUserIdAndFileNameAndIsDelAndParentId(userid, filename,isdel, parentid);
     }
 
 

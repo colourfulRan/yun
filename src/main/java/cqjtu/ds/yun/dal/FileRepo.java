@@ -36,8 +36,8 @@ public interface FileRepo extends JpaRepository<DomainFile,Integer>
     Integer countAllnameLike(@Param("file_name")String file_name,@Param("user_id")Integer user_id);
 
     //清空回收站
-    @Query(value = "delete from file where user_id=1? and (is_del=1 or is_del=2 )",nativeQuery = true)
-    void deleteAllRecy(Integer userId);
+    @Query(value = "select * from file where user_id=:user_id  and (is_del=1 or is_del=2 )",nativeQuery = true)
+    List<DomainFile> findAllRecy(@Param("user_id")Integer user_id);
 
     //定时删除类型为1,2的数据
     @Query(value = "select * from file where is_del=1 or is_del=2",nativeQuery = true)
@@ -82,5 +82,5 @@ public interface FileRepo extends JpaRepository<DomainFile,Integer>
 
 
     //同级文件夹新建重名问题
-    DomainFile findByUserIdAndFileNameAndParentId(Integer userId,String fileName,Integer parentId);
+    DomainFile findByUserIdAndFileNameAndIsDelAndParentId(Integer userId,String fileName,Integer isDel,Integer parentId);
 }

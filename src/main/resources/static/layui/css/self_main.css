@@ -1,13 +1,13 @@
 .layui-layout-admin .layui-logo {
     position: absolute;
-    left: 0;
+    left: -10px;
     top: 10px;
     width: 200px;
     height:60px;
     line-height: 60px;
     text-align: center;
     color: #009688;
-    font-size: 35px;
+    font-size: 48px;
 }
 
 

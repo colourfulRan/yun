@@ -388,7 +388,6 @@ public class FileController {
             //则恢复到原来的位置
             if ((pfile != null && pfile.getIsDel() == 0) )
             {
-
                 //size 的恢复
                 //直到遍历完根目录!!!
                 while (parentid != -1)
@@ -667,7 +666,11 @@ public class FileController {
     public Map<String, Object> recycle_delAll(HttpSession session) {
         System.out.println("调用回收站清空函数!");
         Integer userid = (Integer) session.getAttribute("uid");//通过session获取userid
-        fileService.RemoveAllRecy(userid);
+        List<DomainFile> list =fileService.findAllRecy(userid);
+        for(DomainFile fi:list)
+        {
+            fileService.RemoveFile(fi.getFileId());
+        }
         Map<String, Object> map = null;
         map = new LinkedHashMap<String, Object>();
         map.put("data", true);
@@ -771,10 +774,14 @@ public class FileController {
         if (filename == "") {
             message = "文件夹名不能为空，请重命名";
         } else {
-            DomainFile fi = fileService.findbyname(userid, filename, parentid);
-            if (fi != null) {
+            DomainFile fi = fileService.findbyname(userid, filename,0, parentid);
+            if (fi != null)
+
+            {
                 message = "文件夹重名，请重命名";//自动(+1)
-            } else {
+            }
+            else
+                {
                 DomainFile nfile = new DomainFile();
                 nfile.setUserId(userid);
                 nfile.setFileValid(0);
