@@ -4,15 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-
-import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name="user")
 @Getter
 @Setter
-public class User implements Serializable {
+public class User {
 
     @Id//主键
     @GeneratedValue(strategy = GenerationType.IDENTITY)//自定义生成策略（自增策略）
@@ -22,12 +20,14 @@ public class User implements Serializable {
     private Integer userId;
     private String username;
     private String password;
-    private String photo;
-    private Date birthday;
     private String sex;
-    private String blood_type;
-    private String birth_place;
-    private String live_place;
+    private String bloodType;
+    private String livePlace;
+    private String brithPlace;
+    private Date brithday;
+    private String photo;
+
+
 
 
     public Integer getUserId() {
@@ -54,6 +54,46 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getBloodType() {
+        return bloodType;
+    }
+
+    public void setBloodType(String bloodType) {
+        this.bloodType = bloodType;
+    }
+
+    public String getLivePlace() {
+        return livePlace;
+    }
+
+    public void setLivePlace(String livePlace) {
+        this.livePlace = livePlace;
+    }
+
+    public String getBrithPlace() {
+        return brithPlace;
+    }
+
+    public void setBrithPlace(String brithPlace) {
+        this.brithPlace = brithPlace;
+    }
+
+    public Date getBrithday() {
+        return brithday;
+    }
+
+    public void setBrithday(Date brithday) {
+        this.brithday = brithday;
+    }
+
     public String getPhoto() {
         return photo;
     }
@@ -62,7 +102,20 @@ public class User implements Serializable {
         this.photo = photo;
     }
 
-    public boolean isEmpty() {
-        return false;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", sex='" + sex + '\'' +
+                ", bloodType='" + bloodType + '\'' +
+                ", livePlace='" + livePlace + '\'' +
+                ", brithPlace='" + brithPlace + '\'' +
+                ", brithday=" + brithday +
+                ", photo='" + photo + '\'' +
+                '}';
     }
 }
+
