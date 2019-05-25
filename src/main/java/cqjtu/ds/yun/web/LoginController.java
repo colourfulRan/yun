@@ -90,7 +90,7 @@ class LoginController {
                 User user1 = new User();
                 user1.setUsername(username);
                 user1.setPassword(password);
-                userService.save(user1);
+                userService.SaveUser(user1);
                 return "index";
             } else {
                 return "register";

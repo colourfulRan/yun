@@ -3,6 +3,7 @@ package cqjtu.ds.yun.service.impl;
 import cqjtu.ds.yun.dal.UserRepo;
 import cqjtu.ds.yun.result.ExecuteResult;
 import cqjtu.ds.yun.service.UserService;
+import cqjtu.ds.yun.service.domain.Detail;
 import cqjtu.ds.yun.service.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 /**
  * 用户服务接口实现
@@ -21,24 +21,6 @@ import java.util.List;
 public class UserServiceImpl implements UserService
 {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);//日志打印
-
-    @Autowired
-    UserRepo UserRepo;
-
-    public User FindNameAndPsw(String username, String password) {
-        return UserRepo.findByUsernameAndPassword(username, password);
-    }
-
-    @Override
-    public void save(User user1) {
-        UserRepo.save(user1);
-}
-
-    @Override
-    public User findByName(String username) {
-        return UserRepo.findByUsername(username);
-    }
-
 
     @Autowired
     private UserRepo userRepo;
@@ -63,15 +45,12 @@ public class UserServiceImpl implements UserService
 
 
 
-
-
     @Override
     public Page<User> listByuserNameLike(String username, Pageable pageable) {
       username="%"+username+"%";
       Page<User> users=userRepo.findByUsernameLike(username,pageable);
       return users;
     }
-
 
     @Override
     public ExecuteResult<User> login(String username, String password)
@@ -144,4 +123,33 @@ public class UserServiceImpl implements UserService
         }
         return result;
      }
+
+
+
+
+     //
+
+    @Override
+    public User findbyid(Integer userid) {
+        return userRepo.findByUserId(userid);
     }
+
+
+
+    @Override
+    public User SaveUser(User user) {
+        return userRepo.save(user);
+    }
+
+    @Override
+    public User FindNameAndPsw(String username, String password) {
+        return userRepo.findByUsernameAndPassword(username,password);
+    }
+
+    @Override
+    public User findByName(String username) {
+        return userRepo.findByUsername(username);
+    }
+
+
+}

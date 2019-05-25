@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>详细资料</title>
+    <link rel="stylesheet" href="../static/layui/css/layui.css">
+    <link rel="stylesheet" href="../static/layui/css/personal.css">
+    <script type="text/javascript" src="../static/layui/jquery-2.2.3.min.js"></script>
+    <script src="../static/layui/layui.js"></script>
+</head>
+<body>
+
+
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+    <legend>详细资料</legend>
+</fieldset>
+
+<form class="layui-form" >
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">体型</label>
+            <div class="layui-input-block">
+                <select name="shape" id="shape"  >
+                    <option value=""></option>
+                    <option value="苗条">苗条</option>
+                    <option value="中等" >中等</option>
+                     <option value="高大">高大</option>
+                    <option value="小巧" >小巧</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+
+
+<div class="layui-form-item">
+    <div class="layui-inline">
+    <label class="layui-form-label">婚姻状况</label>
+    <div class="layui-input-block">
+        <select name="marriage" id="marriage"  lay-filter="marriage">
+            <option value="未知" >未知</option>
+            <option value="结婚">结婚</option>
+            <option value="未婚" >未婚</option>
+            <option value="恋爱">恋爱</option>
+            <option value="离婚">离婚</option>
+            <option value="其他">其他</option>
+
+        </select>
+    </div>
+    </div>
+</div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">个人习惯</label>
+        <div class="layui-input-inline">
+            <select name="smokehabit">
+                <option value=""></option>
+                <option value="从不抽烟">从不抽烟</option>
+                <option value="偶尔抽烟" >偶尔抽烟</option>
+                <option value="经常抽烟">经常抽烟</option>
+            </select>
+        </div>
+        <div class="layui-input-inline">
+            <select name="drinkhabit">
+                <option value=""></option>
+                <option value="从不喝酒">从不喝酒</option>
+                <option value="偶尔喝酒">偶尔喝酒</option>
+
+                <option value="经常喝酒">经常喝酒</option>
+
+            </select>
+        </div>
+        <div class="layui-input-inline">
+            <select name="sleephabit">
+                <option value=""></option>
+                <option value="早睡早起">早睡早起</option>
+                <option value="晚睡晚起">晚睡晚起</option>
+                <option value="早睡晚起">早睡晚起</option>
+                <option value="晚睡早起">晚睡早起</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">教育程度</label>
+            <div class="layui-input-block">
+                <select name="educat" id="educat"  >
+                    <option value=""></option>
+                    <option value="本科">本科</option>
+                    <option value="高中" >高中</option>
+                    <option value="硕士">硕士</option>
+                    <option value="博士" >博士</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">当前职业</label>
+            <div class="layui-input-block">
+                <select name="profession" id="profession"  lay-filter="profession">
+                    <option value=""></option>
+                    <option value="医生">医生</option>
+                    <option value="工程师" >工程师</option>
+                    <option value="教师">教师</option>
+                    <option value="军人">军人</option>
+                    <option value="其他">其他</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="layui-form-item">
+
+            <label class="layui-form-label">电话</label>
+            <div class="layui-input-block1">
+                <input type="text"name="phone" lay-verify="required|phone" autocomplete="off"  placeholder="请输入电话" class="layui-input">
+            </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+
+
+</form>
+
+
+<script>
+
+    layui.use(['form', 'layedit', 'laydate','util'], function()
+    {
+        var form = layui.form
+            ,layer = layui.layer
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate
+            , util = layui.util;//工具集
+
+        //日期
+        laydate.render({
+            elem: '#date'
+        });
+
+        //
+        init();
+
+        function init()
+        {
+            $.ajax
+            (
+                {
+                    url: "detail_search",
+                    type: "post",
+                    dataType: "json",
+                    async: false,
+                    success: function (map)
+                    {
+                        var json = eval(map); //数组
+                        //能够正常返回数据才为成功
+                        var state = map.state;
+                        if (state)
+                        {
+                            map.a;
+
+                            $('option[value='+ map.data.shape+']').attr("selected", "selected");
+                            $('option[value='+ map.data.marriage+']').attr("selected", "selected");
+                            $('option[value='+ map.data.smokehabit+']').attr("selected", "selected");
+                            $('option[value='+ map.data.drinkhabit+']').attr("selected", "selected");
+                            $('option[value='+ map.data.sleephabit+']').attr("selected", "selected");
+                            $('option[value='+ map.data.educat+']').attr("selected", "selected");
+                            $('option[value='+ map.data.profession+']').attr("selected", "selected");
+                            $('#phone').val(map.data.phone);
+
+
+                            //layer.alert("保存成功");
+                        }
+                        else
+                        {
+                            layer.alert('初始化失败');
+                        }
+                    },
+                    error: function ()
+                    {
+                        layer.alert("错误");
+                    }
+                }
+            );
+        }
+
+
+
+        //监听提交
+        form.on('submit(demo1)', function(data)
+        {
+             $.ajax
+            (
+                {
+                    url: "detail_update",
+                    type: "post",
+                    dataType: "json",
+                    async: false,
+                    data:
+                        {
+                            shape:data.field.shape,
+                            marriage:data.field.marriage,
+                            smokehabit:data.field.smokehabit,
+                            drinkhabit:data.field.drinkhabit,
+                            sleephabit:data.field.sleephabit,
+                            educat:data.field.educat,
+                            profession:data.field.profession,
+                            telephone:data.field.phone,
+                        },
+                    success: function (map)
+                    {
+                        var json = eval(map); //数组
+                        //能够正常返回数据才为成功
+                        var state = map.state;
+                        if (state)
+                        {
+                            layer.alert("保存成功");
+                        }
+                        else
+                        {
+                            layer.alert('保存失败');
+                        }
+                    },
+                    error: function ()
+                    {
+                        layer.alert("错误");
+                    }
+                }
+            );
+             return false;
+        });
+
+
+    });
+</script>
+</body>
+</html>
