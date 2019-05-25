@@ -20,7 +20,8 @@ import java.sql.Timestamp;
 import java.util.*;
 
 @Controller
-public class FileController {
+public class FileController
+{
     private Logger logger = LoggerFactory.getLogger(FileController.class);
     @Autowired
     private FileService fileService;
@@ -101,12 +102,10 @@ public class FileController {
      *最近文件操作
      */
 
-
     //最近列表（正确）
     @RequestMapping("recent_list")
     //@RequestMapping后，返回值通常解析为跳转路径，加上@responsebody后返回结果不会被解析为跳转路径，而是直接写入HTTP response body中。
     // 比如异步获取json数据，加上@responsebody后，会直接返回json数据。
-
     @ResponseBody
     public Map<String, Object> recent_list(HttpSession session, Integer page, Integer limit) {
         logger.info("最近列表！！！");
