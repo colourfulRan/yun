@@ -102,7 +102,7 @@ class LoginController {
 
     public Boolean registerUser(String username) {
         Boolean a = true;
-        if (userService.findByName(username).isEmpty()) {
+        if (userService.findByName(username)== null) {
             return a;
         } else {
             return false;
