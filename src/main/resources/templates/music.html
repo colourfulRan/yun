@@ -194,6 +194,7 @@
         table.on('toolbar(test)', function(obj){
             var checkStatus = table.checkStatus(obj.config.id)
                 ,data = checkStatus.data; //获取选中的数据;
+
             switch(obj.event){
                 case 'del':
                     if(data.length==0)

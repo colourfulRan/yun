@@ -26,41 +26,48 @@
     <div class="main cl">
 
         <div class="main_z z">
-            <img src="images/register02.png"/>
+            <img src="../static/images/register02.png"/>
         </div>
 
 
 
         <div class="main_y y" >
-<form th:action="@{/login}" method="post">
-            <div class="main_y_title">
-                欢迎使用
-            </div>
-          <!--  <div class="meta"></div>-->
-            <div class="main_y_content">
-
-                <div class="main_input">
-                    <input type="text" placeholder="请输入用户名" class="phone" name="username" maxlength="11"/>
-                    <img src="images/register03.png"/>
+            <form th:action="@{/login}" method="post">
+                <div class="main_y_title">
+                    欢迎使用
                 </div>
+            </form>
+            <form th:action="@{/dologin}" method="post">
+                <!--  <div class="meta"></div>-->
+                <div class="main_y_content">
 
-                <div class="main_input">
-                    <input type="password" placeholder="请输入密码" class="password" name="password" maxlength="18"/>
-                    <img src="images/register03.png"/>
+                    <div class="main_input">
+                        <input type="text" placeholder="请输入用户名" class="phone" name="username" maxlength="11"/>
+                        <img src="../static/images/register03.png"/>
+                    </div>
+
+                    <div class="main_input">
+                        <input type="password" placeholder="请输入密码" class="password" name="password" maxlength="18"/>
+                        <img src="../static/images/register03.png"/>
+                    </div>
+                    <!--判断-->
+                    <p style="color: red" th:text="${msg}" th:if="${not #strings.isEmpty(msg)}"></p>
+                    <div class="remember_password">
+                        <input type="checkbox" checked="checked" name="checked" class="examine"/>
+                        <span>记住密码</span>
+                    </div>
+
+                    <button class="register" type="submit">登录</button>
+
+                    <div class="register">
+                        <a href="register">注册</a>
+                    </div>
+
+                    <div class="meta">
+                        <a href="register">忘记密码?</a>
+                    </div>
                 </div>
-
-                <div class="remember_password">
-                    <input type="checkbox" checked="checked" name="checked" class="examine"/>
-                    <span>记住密码</span>
-                </div>
-
-                <button class="register" type="submit">登录</button>
-
-                <div class="main_y_content_buttom">
-                    <a href="register">忘记密码?</a>
-                </div>
-            </div>
-</form>
+            </form>
         </div>
 
     </div>

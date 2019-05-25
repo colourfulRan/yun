@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * 用户服务接口实现
@@ -20,6 +21,24 @@ import javax.transaction.Transactional;
 public class UserServiceImpl implements UserService
 {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);//日志打印
+
+    @Autowired
+    UserRepo UserRepo;
+
+    public User FindNameAndPsw(String username, String password) {
+        return UserRepo.findByUsernameAndPassword(username, password);
+    }
+
+    @Override
+    public void save(User user1) {
+        UserRepo.save(user1);
+}
+
+    @Override
+    public User findByName(String username) {
+        return UserRepo.findByUsername(username);
+    }
+
 
     @Autowired
     private UserRepo userRepo;
@@ -44,12 +63,15 @@ public class UserServiceImpl implements UserService
 
 
 
+
+
     @Override
     public Page<User> listByuserNameLike(String username, Pageable pageable) {
       username="%"+username+"%";
       Page<User> users=userRepo.findByUsernameLike(username,pageable);
       return users;
     }
+
 
     @Override
     public ExecuteResult<User> login(String username, String password)

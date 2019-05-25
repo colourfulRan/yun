@@ -22,7 +22,7 @@ public class AliyunOSSUtil {
     private static int uploadedPart=0;
     private static int percent;
     //创建一个可重用固定线程数的线程池
-    private static ExecutorService executorService= Executors.newFixedThreadPool(5);
+    private static ExecutorService executorService;
     private  static OSS ossClient=null;
     //partETags是PartETag的集合。PartETag由分片的ETag和分片号组成。
     //线程安全，对象加锁
@@ -33,6 +33,7 @@ public class AliyunOSSUtil {
         String accessKeyId=constantConfig.getLXIMAGE_ACCESS_KEY_ID();
         String accessKeySecret=constantConfig.getLXIMAGE_ACCESS_KEY_SECRET();
         String bucketName=constantConfig.getLXIMAGE_BUCKET_NAME1();
+        executorService= Executors.newFixedThreadPool(5);
         //判断文件
         if (file==null){
             return null;
@@ -50,7 +51,7 @@ public class AliyunOSSUtil {
         List<PartETag> partETags=Collections.synchronizedList(new ArrayList<PartETag>());
         String uploadId=result.getUploadId();
         System.out.println(uploadId);
-        session.setAttribute("uploadId",uploadId);
+      //  session.setAttribute("uploadId",uploadId);
         try{
             /**2.上传分片**/
             //计算文件有多少个分片

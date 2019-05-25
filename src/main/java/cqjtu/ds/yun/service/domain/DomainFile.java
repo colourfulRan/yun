@@ -17,8 +17,8 @@ import java.util.Date;
 public class DomainFile
 {
     @Id
-    private int fileId;//数据库中fileidw唯一！！！！
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)//自定义生成策略（自增策略）
+    private int fileId;
     private int parentId;
 
     private String fileHash;
@@ -32,7 +32,8 @@ public class DomainFile
     private String filePath;
 
     //上传日期
-    private Timestamp  updateDate;
+    private Timestamp updateDate;
+
 
     private int fileSize;
 
@@ -40,6 +41,7 @@ public class DomainFile
 
     //
     private  int isDel;
+
 
     private Timestamp delDate;
 
