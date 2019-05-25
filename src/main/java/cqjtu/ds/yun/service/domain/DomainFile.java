@@ -19,7 +19,6 @@ public class DomainFile
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)//自定义生成策略（自增策略）
     private int fileId;
-
     private int parentId;
 
     private String fileHash;
@@ -40,7 +39,8 @@ public class DomainFile
 
     private String secretKey;
 
-    private  boolean isDel;
+    //
+    private  int isDel;
 
 
     private Timestamp delDate;
@@ -48,8 +48,6 @@ public class DomainFile
     private int fileValid;
 
     private Timestamp recentDate;
-
-
 
 
     public int getFileId()
@@ -152,12 +150,12 @@ public class DomainFile
         this.secretKey = secretKey;
     }
 
-    public boolean isDel() {
+    public int getIsDel() {
         return isDel;
     }
 
-    public void setDel(boolean del) {
-        isDel = del;
+    public void setIsDel(int isDel) {
+        this.isDel = isDel;
     }
 
     public Timestamp getDelDate() {

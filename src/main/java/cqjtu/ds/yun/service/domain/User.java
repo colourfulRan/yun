@@ -1,10 +1,12 @@
 package cqjtu.ds.yun.service.domain;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashMap;
 
 @Entity
 @Table(name="user")
@@ -26,6 +28,11 @@ public class User {
     private String brithPlace;
     private Date brithday;
     private String photo;
+
+
+
+
+
 
 
 
@@ -103,6 +110,7 @@ public class User {
     }
 
 
+
     @Override
     public String toString() {
         return "User{" +
@@ -116,6 +124,50 @@ public class User {
                 ", brithday=" + brithday +
                 ", photo='" + photo + '\'' +
                 '}';
+    public String getSex() {
+        return sex;
     }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public java.sql.Date getBrithday() {
+        return brithday;
+    }
+
+    public void setBrithday(java.sql.Date brithday) {
+        this.brithday = brithday;
+    }
+
+    public String getBloodType() {
+        return bloodType;
+    }
+
+    public void setBloodType(String bloodType) {
+        this.bloodType = bloodType;
+    }
+
+    public String getBrithPlace() {
+        return brithPlace;
+    }
+
+    public void setBrithPlace(String brithPlace) {
+        this.brithPlace = brithPlace;
+    }
+
+    public String getLivePlace() {
+        return livePlace;
+    }
+
+    public void setLivePlace(String livePlace) {
+        this.livePlace = livePlace;
+    }
+
+
+
+    /**public boolean isEmpty() {
+        return false;
+    }**/
 }
 

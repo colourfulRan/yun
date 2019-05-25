@@ -37,7 +37,6 @@ public class LoginController
         //User u1=
         if(loginResult.isExecuted()&&loginResult.isSuccess())
         {
-            //user.setUserId(loginResult.getData().getUserId());
             model.addAttribute("uid",loginResult.getData().getUserId());
             model.addAttribute("uname",loginResult.getData().getUsername());
             model.addAttribute("uphoto",loginResult.getData().getPhoto());

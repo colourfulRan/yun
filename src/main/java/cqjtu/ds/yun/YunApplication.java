@@ -1,5 +1,6 @@
 package cqjtu.ds.yun;
 
+import com.alibaba.dubbo.spring.boot.annotation.EnableDubboConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -11,7 +12,7 @@ import org.springframework.web.multipart.MultipartResolver;
 
 import javax.servlet.MultipartConfigElement;
 
-/*@EnableDubboConfiguration*/
+@EnableDubboConfiguration
 @SpringBootApplication
 @EnableScheduling    //开启定时器调度任务
 public class YunApplication {

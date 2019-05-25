@@ -57,11 +57,9 @@ public class AESUtils {
             keyGenerator.init(128,new SecureRandom(sKey.getBytes()));//使用用户提供的随机源初始化此密钥生成器，使其具有确定的密钥大小。
             SecretKey secretKey=keyGenerator.generateKey();     //生成一个密钥
             byte[] codeFormat=secretKey.getEncoded();           //基本编码格式的密钥
-            System.out.println("secretKey: "+secretKey.getEncoded());
             /*byte[] sekey=sKey.getBytes("UTF-8");
             sekey=Arrays.copyOf(sekey,16);*/
             SecretKeySpec key=new SecretKeySpec(codeFormat,"AES");//根据给定的字节数组构造一个密钥，以与 provider 无关的方式指定一个密钥。
-            System.out.println("key: "+key.getEncoded());
             cipher=Cipher.getInstance("AES/CBC/PKCS5Padding");    //转换   算法/模式/填充
             //初始化
             cipher.init(cipherMode,key,createIv(sKey.substring(sKey.length()-16,sKey.length())));
@@ -160,20 +158,6 @@ public class AESUtils {
         }
         return decryptFile;
     }
-
-   /* public static void main(String []args){
-        String ckey="00b09e37363e1f25b23c78e499392";//
-        //未加密文件的路径
-        File oldfile=new File("G:\\毕业设计\\开题报告.doc");
-        //加密后文件的路径
-        File encrypfile=new File("G:\\毕业设计\\encrypfile.txt");
-        File encrypfile1=new File("G:\\毕业设计\\encrypfile1.txt");
-        //解密后文件的路径
-       // File decrypfile=new File("G:\\毕业设计\\decrypfile.txt");
-        encryptFile(oldfile,encrypfile,ckey);
-        encryptFile(oldfile,encrypfile1,ckey);
-       //decryptFile(encrypfile,decrypfile,ckey);
-    }*/
 
 
 }
