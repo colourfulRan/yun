@@ -5,6 +5,9 @@ import cqjtu.ds.yun.service.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Collection;
+import java.util.List;
+
 public interface UserService
 {
     /**
@@ -29,6 +32,7 @@ public interface UserService
      */
     Page<User> listByuserNameLike(String userName, Pageable pageable);
 
+
     /**
      *
      * @param username
@@ -39,4 +43,9 @@ public interface UserService
     ExecuteResult<User> login(String username, String password);
     ExecuteResult<Boolean>register(String username,String password);
 
+    void save(User user1);
+
+    User FindNameAndPsw(String username, String password);
+
+    User findByName(String username);
 }
