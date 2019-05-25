@@ -1,27 +1,27 @@
 .layui-layout-admin .layui-logo {
     position: absolute;
-    left: 0;
+    left: -10px;
     top: 10px;
     width: 200px;
     height:60px;
     line-height: 60px;
     text-align: center;
     color: #009688;
-    font-size: 35px;
+    font-size: 48px;
 }
+
 
 .layui-layout-admin .layui-body {
     top: 80px;
     bottom: 0px;
 }
 
+
 .layui-body
 {
     position: absolute;
     left: 0;
     right: 0;
-    top: 80px;
-    bottom: 0;
     z-index: 998;
     width: auto;
     overflow-x: hidden;
@@ -29,9 +29,8 @@
     box-sizing: border-box;
 }
 
-
-
-.layui-header{
+.layui-header
+{
     z-index: 1000;
     height: 80px;
 }

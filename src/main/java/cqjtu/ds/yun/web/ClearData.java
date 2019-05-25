@@ -21,12 +21,13 @@ public class ClearData
 
 
     //每五分钟触发一次
-    @Scheduled(cron = "0 0/1 * * * ? ")
+    @Scheduled(cron = "0 0/2 * * * ? ")
    public void DelRecycle()
    {
-       //logger.info("---------定时任务开始执行---------"+new Timestamp(System.currentTimeMillis()));
+       logger.info("---------定时任务开始执行---------"+new Timestamp(System.currentTimeMillis()));
 
-       List<DomainFile> listAll=fileService.findAllbyisdel(true);
+       //删除一或2！！
+       List<DomainFile> listAll=fileService.findData();
        //SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
        if (listAll != null)
        {
@@ -38,15 +39,14 @@ public class ClearData
                long yy = curDate.getTime() - file.getDelDate().getTime();
                 long d=yy/1000/60;//相差多少分钟
               // logger.info("相差多少分钟:"+d);
-               if(d>=30)
+               if((d/2)>=10)
                {
                    fileService.RemoveFile(file.getFileId());
                }
                else
                {
                    DomainFile oldfile=fileService.findbyid(file.getFileId());
-                  // oldfile.setDel(true);
-                   oldfile.setFileValid((int) (30-d));
+                   oldfile.setFileValid((int) (10-(d/2)));
                    fileService.SaveFile(oldfile);
                }
            }

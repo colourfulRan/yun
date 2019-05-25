@@ -30,6 +30,11 @@ public class User implements Serializable {
     private String live_place;
 
 
+
+
+
+
+
     public Integer getUserId() {
         return userId;
     }
