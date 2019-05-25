@@ -1,27 +1,25 @@
 package cqjtu.ds.yun.service.impl;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.aliyun.oss.model.OSSObject;
+import cqjtu.ds.keycspfacade.SignatureService;
 import cqjtu.ds.yun.dal.FileRepo;
 import cqjtu.ds.yun.service.LoadFileService;
 import cqjtu.ds.yun.service.domain.DomainFile;
 import cqjtu.ds.yun.utils.*;
+import cqjtu.ds.yunserverfacade.CheckService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.DigestUtils;
 
 import javax.servlet.http.HttpSession;
 
 import java.io.*;
 import java.math.BigInteger;
-import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.TimeZone;
-
-import static cqjtu.ds.yun.utils.BlindSignature.blindSignature;
-
+import java.util.Map;
 
 
 @Component
@@ -31,64 +29,75 @@ public class LoadFileServiceImpl implements LoadFileService {
     private AliyunOSSUtil aliyunOSSUtil;
     @Autowired
     private FileRepo fileRepo;
+    @Reference
+    private SignatureService signatureService;
+    @Reference
+    private CheckService checkService;
 
     @Override
-    public void uploadFile(File file,String fileType, HttpSession session) {
-        String key=MD5Utils.getMD5ByFile(file);
+    public boolean uploadFile(File file,String fileType, HttpSession session) {
+        long start = System.currentTimeMillis();
+        String key= MD5Utils.getMD5ByFile(file);
         BigInteger blindMsg=addBlindFactor(key);
-        BigInteger blindSig=getBlindSignatureSerectKey(blindMsg);
+        BigInteger blindSig=signatureService.getBlindSignatureSerectKey(blindMsg);
         String serectKey=reductionSignature(blindSig);
         File encrypfile=new File("encrypfile");
-
-        encrypfile=AESUtils.encryptFile(file,encrypfile,serectKey);
+        encrypfile= AESUtils.encryptFile(file,encrypfile,serectKey);
         String fileHash=MD5Utils.getMD5ByFile(encrypfile);
-        //云端不存在相同文件
-        if(fileHash!=null){
-            BloomFilter bloomFilter=new BloomFilter(50);
+        long end = System.currentTimeMillis();
+        System.out.print("盲签名时间：");
+        System.out.println(end-start);
+        int userId= (int) session.getAttribute("uid");
+        Map<String,Object> map=checkService.checkHash(fileHash,userId);
+        boolean flag=true;
+        long start1 = System.currentTimeMillis();
+        if(!(Boolean) map.get("result")){
+            //云端不存在相同文件,文件首次上传
+            List<String> partHashs = null;
             try {
-                List<String> partHashs=FileUtil.splitBySize(file,50);
-                int i=1;
-                for (String str:partHashs){
-                    bloomFilter.addIfNotExist(PRF(str,i));
-                    i++;
-                }
+                partHashs= FileUtil.splitBySize(file,50);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            bloomFilter.saveFilterToFile("src/bloomFilter.obj");
+         //   hashFilter.saveFilterToFile("src/bloomFilter.obj");
          //   File filterFile=new File("src/bloomFilter.obj");
+
+            checkService.save(fileHash,partHashs,userId);
+            long end1 = System.currentTimeMillis();
+            System.out.print("签名文件时间：");
+            System.out.println(end1-start1);
             aliyunOSSUtil.upLoad(encrypfile,session,fileHash);
-         //   aliyunOSSUtil.upLoad(filterFile,)
         }else {
             //云端存在相同文件
+            long start2= System.currentTimeMillis();
+            List<Integer> challenges= (List<Integer>) map.get("challenges");
+            int challId=challenges.get(challenges.size()-1);
+            List<String> challengeHash=FileUtil.splitByChallenges(file,50,challenges);
+            flag=checkService.checkChallenge(challengeHash,challId);
+            long end2 = System.currentTimeMillis();
+            System.out.print("挑战认证时间：");
+            System.out.println(end2-start2);
         }
-
-        DomainFile domainFile=new DomainFile();
-        domainFile.setFileHash(fileHash);
-        domainFile.setFileName(file.getName());
-        System.out.println("文件名s："+file.getName());
-        domainFile.setSecretKey(serectKey);
-        domainFile.setTypeId(getFileType(fileType));
-      //  System.out.println(file.length()+"  "+file.length()/1024+" "+Math.ceil(file.length()/1024.0)+" "+(int) Math.ceil(file.length()/1024.0));
-        domainFile.setFileSize((int) Math.ceil(file.length()/1024.0));
-       // SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-       // Date date=new Date();
-        domainFile.setUpdateDate(new Timestamp(System.currentTimeMillis()));
-        domainFile.setUserId(1);
-        domainFile.setFileValid(0);
-       // domainFile.setDel(false);
-        fileRepo.save(domainFile);
-
-       // encrypfile.delete();
+        if (flag){
+            DomainFile domainFile=new DomainFile();
+            domainFile.setFileHash(fileHash);
+            domainFile.setFileName(file.getName());
+            domainFile.setSecretKey(serectKey);
+            domainFile.setTypeId(getFileType(fileType));
+            domainFile.setFileSize((int) Math.ceil(file.length()/1024.0));
+            domainFile.setUpdateDate(new Timestamp(System.currentTimeMillis()));
+            domainFile.setUserId(userId);
+            domainFile.setFileValid(0);
+            fileRepo.save(domainFile);
+            session.setAttribute("uploadPercent",100);
+        }
+        encrypfile.delete();
+        file.deleteOnExit();
+        return flag;
     }
 
-    @Override
-    public String PRF(String partHash, int i) {
-        partHash=partHash+i;
-      //  System.out.println(partHash);
-        String e= DigestUtils.md5DigestAsHex(partHash.getBytes());
-        return e;
-    }
+
+
 
     public int getFileType(String fileType){
         String[] types=fileType.split("/");
@@ -97,7 +106,7 @@ public class LoadFileServiceImpl implements LoadFileService {
             case "image":type=1;break;
             case "video":type=3;break;
             case "audio":type=4;break;
-            case "plain":type=5;break;
+            case "text":type=5;break;
             case "pdf":type=6;break;
             case "vnd.openxmlformats-officedocument.wordprocessingml.document":type=7;break;
             case "msword":type=7;break;
@@ -125,7 +134,7 @@ public class LoadFileServiceImpl implements LoadFileService {
             ois1.close();
             BigInteger e=pubKey.getPublicExponent();
             BigInteger n=pubKey.getModulus();
-            blindMsg=BlindSignature.blindHideMsg(m,factor,e,n);
+            blindMsg= BlindSignature.blindHideMsg(m,factor,e,n);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -156,25 +165,6 @@ public class LoadFileServiceImpl implements LoadFileService {
         return serectKey;
     }
 
-    /**
-     * 由密钥服务器签名的消息
-     */
-    public BigInteger getBlindSignatureSerectKey(BigInteger blindMsg){
-        BigInteger blindSig=BigInteger.ZERO;
-        try {
-            ObjectInputStream ois2=new ObjectInputStream(new FileInputStream("src/private.key"));
-            RSAPrivateKey priKey= (RSAPrivateKey) ois2.readObject();
-            ois2.close();
-            BigInteger d=priKey.getPrivateExponent();
-            BigInteger n=priKey.getModulus();
-            blindSig=blindSignature(blindMsg,d,n);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return blindSig;
-    }
 
     //下载文件
     public File downloadFile(int fileId){
@@ -185,5 +175,11 @@ public class LoadFileServiceImpl implements LoadFileService {
         //解密后的文件
         deFile= AESUtils.decryptFile(inputStream,deFile,file.getSecretKey());
         return deFile;
+    }
+
+    @Override
+    public boolean checkFileUser(int userId, int fileId) {
+        DomainFile file=fileRepo.findByFileId(fileId);
+        return checkService.checkFileUser(file.getFileHash(),userId);
     }
 }

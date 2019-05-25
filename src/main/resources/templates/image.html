@@ -73,10 +73,6 @@
                 <button type="button" class="layui-btn layui-btn-sm" id="uploadDemo"   lay-data="{accept: 'file'}" style="margin-right: 10px" >
                     <i class="layui-icon">&#xe67c;</i>上传
                 </button>
-                <button class="layui-btn layui-btn-primary  layui-btn-sm"  lay-event="download">
-                    <i class="layui-icon">&#xe601;</i>
-                    <span>下载</span>
-                </button>
                 <button class="layui-btn layui-btn-primary  layui-btn-sm" lay-event="share">
                     <i class="layui-icon">&#xe641;</i>
                     <span>分享</span>
@@ -187,6 +183,9 @@
                 }
                 ,error: function () {
                     layer.alert("失败");
+                    $('#myModal').modal('hide');
+                    stopInterval();
+                    clearPercent();
                 }
             });
             //头工具栏事件
@@ -374,6 +373,7 @@
                 $('#myModal').modal('hide');
                 console.log(data);
                 stopInterval();
+                clearPercent();
             }
         });
     }

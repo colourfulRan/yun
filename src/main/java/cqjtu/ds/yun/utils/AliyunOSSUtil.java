@@ -50,8 +50,7 @@ public class AliyunOSSUtil {
         //返回uploadId，它是分片上传事件的唯一标识，可以根据这个ID来发起相关操作，如取消分片上传、查询分片上传等
         List<PartETag> partETags=Collections.synchronizedList(new ArrayList<PartETag>());
         String uploadId=result.getUploadId();
-        System.out.println(uploadId);
-      //  session.setAttribute("uploadId",uploadId);
+      //  System.out.println(uploadId);
         try{
             /**2.上传分片**/
             //计算文件有多少个分片
@@ -162,7 +161,7 @@ public class AliyunOSSUtil {
                 uploadPartRequest.setPartNumber(this.partNumber);
                 //每个分片不需要按顺序上传，甚至可以在不同客户端上传，OSS会根据分片号排序组成完整的文件。
                 UploadPartResult uploadPartResult=ossClient.uploadPart(uploadPartRequest);
-                System.out.println("Part#"+this.partNumber+"done\n");
+             //   System.out.println("Part#"+this.partNumber+"done\n");
                 uploadedPart++;
                 percent=uploadedPart*100/partCount;
                 session.setAttribute("uploadPercent",percent);

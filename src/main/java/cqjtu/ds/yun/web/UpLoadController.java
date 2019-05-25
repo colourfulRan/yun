@@ -29,16 +29,11 @@ public class UpLoadController {
     private AliyunOSSUtil aliyunOSSUtil;
     @Autowired
     private LoadFileService loadFileService;
-   /* @Reference
-    private FileService fileService;*/
+
     @RequestMapping("test")
     @ResponseBody
-    public Map<String,Object> test(String fileId){
-        System.out.println("dddd");
-        Map<String ,Object> map=new HashMap<>();
-        map.put("msg",fileId+"哈哈");
-        System.out.println(fileId);
-        return map;
+    public void test(){
+
     }
 
 
@@ -51,7 +46,7 @@ public class UpLoadController {
         String filename=file.getOriginalFilename();
         String fileType=file.getContentType();
         session.setAttribute("fileName",filename);
-        System.out.println(filename);
+       // System.out.println(filename);
         long fileLength=file.getSize();
         DecimalFormat df=new DecimalFormat(".00");
         if(fileLength<1024){
@@ -71,21 +66,24 @@ public class UpLoadController {
                     os.close();
                     file.transferTo(newFile);//将上传文件写入目标文件
                     //上传到OSS
-                    String key="time1128";
-                  //  String url=aliyunOSSUtil.upLoad(newFile,session,key);
-                    map.put("code",0);
-                    map.put("msg","上传成功！");
-                    map.put("data","");
-                    loadFileService.uploadFile(newFile,fileType,session);
+                    boolean flag=loadFileService.uploadFile(newFile,fileType,session);
+                    if(flag){
+                        map.put("code",0);
+                        map.put("msg","上传成功！");
+                        map.put("data","");
+                    }else {
+                        map.put("code",1);
+                        map.put("msg","上传失败！");
+                        map.put("data","");
+                    }
                     //删除临时文件
-                    newFile.delete();
+                    newFile.deleteOnExit();
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
             map.put("code",1);
             map.put("msg","上传失败！");
-            //src.put("src","G://月度考核表模板.doc");
             map.put("data","");
         }
         return map;
@@ -99,7 +97,7 @@ public class UpLoadController {
         int percent=session.getAttribute("uploadPercent")==null?0: (int) session.getAttribute("uploadPercent");
         String uploadSize= session.getAttribute("uploadSize")==null?null: (String) session.getAttribute("uploadSize");
         String fileSize=session.getAttribute("fileSize")==null?null: (String) session.getAttribute("fileSize");
-        System.out.println("上传进度"+percent+"已上传大小"+uploadSize);
+     //   System.out.println("上传进度"+percent+"已上传大小"+uploadSize);
 
         JSONObject data=new JSONObject();
         try {
@@ -133,4 +131,5 @@ public class UpLoadController {
         System.out.println(session.getId());
         return "upLoad";
     }
+
 }
