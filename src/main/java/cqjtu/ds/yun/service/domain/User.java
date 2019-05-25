@@ -31,6 +31,11 @@ public class User implements Serializable {
     private String photo;
 
 
+
+
+
+
+
     public Integer getUserId() {
         return userId;
     }
@@ -62,6 +67,7 @@ public class User implements Serializable {
     public void setPhoto(String photo) {
         this.photo = photo;
     }
+
 
     public String getSex() {
         return sex;
@@ -105,4 +111,7 @@ public class User implements Serializable {
 
 
 
+    /**public boolean isEmpty() {
+        return false;
+    }**/
 }
